@@ -99,6 +99,76 @@ En este contexto, un programa en Spark típicamente tiene la siguiente estructur
 
 # Estructura de un programa de conteo de palabras en diferentes documentos en Spark
 
+Utilizando los pasos anteriores, podemos definir la siguiente estructura para un programa de conteo de palabras en diferentes documentos
+utilizando el modelo map-reduce en Spark:
+
+1. Imports.
+
+   ```java
+   import sparkUtil.SparkUtil;
+   import org.apache.spark.api.java.JavaSparkContext;
+   import org.apache.spark.api.java.JavaRDD;
+   import org.apache.spark.api.java.*;
+   import scala.Tuple2;
+   import java.util.Arrays;
+   import java.util.List;
+   ```
+
+2. Configuración.
+
+   ```java
+   JavaSparkContext sc = SparkUtil.getSparkContext();
+   ```
+
+3. Carga de datos.
+
+   - Se cargan los datos desde uno o más archivos de texto. En este caso, los que se encuentran en la carpeta `docs`.
+
+     ```java
+     JavaRDD<String> documents = sc.textFile("docs/*.txt");
+     ```
+
+4. Procesamiento.
+
+   - Se cargan los datos desde un conjunto de documentos y se almacenan en un RDD de tipo `String`, en donde cada elemento del RDD es una línea de un documento.
+
+   - Se aplica la transformacion `flatMap` y se divide cada línea en palabras, estas se almacenan en un RDD de tipo `String`, en donde cada elemento del RDD es una palabra.
+
+   - A continuación, se hace uso del modelo map-reduce:
+
+     - Mediante la transformación `mapToPair`, se transforma cada palabra en un par clave-valor y se almacenan en un RDD de tipo `Par` en donde cada elemento del RDD es un par **(palabra, 1)**.
+
+     - Luego, se aplica la transformación `reduceByKey` para sumar los valores de las palabras que son iguales (es decir, se suman los valores de las palabras repetidas como si tuvieramos un contador). El resultado es un RDD de tipo `Par` en donde cada elemento del RDD es un par **(palabra, cantidad_de_veces_que_aparece)**.
+
+   ```java
+   // Lectura de datos
+   JavaRDD<String> documents = sc.textFile("docs/*.txt");
+
+
+   // Map: Dividir cada documento en palabras
+   JavaRDD<String> words = documents.flatMap(line -> Arrays.asList(line.split(" ")).iterator());
+
+   // Map: Asignar el valor 1 a cada palabra
+   JavaPairRDD<String, Integer> wordCounts = words.mapToPair(word -> new Tuple2<>(word, 1));
+
+   // Reduce: Sumar los valores de cada palabra
+   JavaPairRDD<String, Integer> reducedCounts = wordCounts.reduceByKey((count1, count2) -> count1 + count2);
+   ```
+
+5. Salida.
+
+   - Finalmente, se llama a la acción `collect` para recopilar todos los elementos del RDD en una lista **results** y se imprimen los resultados.
+
+   ```java
+   // Acción y resultados
+   List<Tuple2<String, Integer>> results = reducedCounts.collect();
+   for (Tuple2<String, Integer> tuple : results) {
+       System.out.println(tuple._1() + ": " + tuple._2());
+   }
+
+   sc.close();
+   ```
+
 # ¿Cómo adaptar el código del Laboratorio 2 a la estructura del programa objetivo en Spark?
 
 # ¿Cómo se integra una estructura orientada a objetos con la estructura funcional de map-reduce?
