@@ -5,10 +5,9 @@ import org.apache.spark.api.java.JavaSparkContext;
 
 public class SparkUtil {
 
-    private static final SparkConf conf = new SparkConf().setAppName("FRSpark").setMaster("local[*]");
-    private static final JavaSparkContext sc = new JavaSparkContext(conf);
-
-    public static JavaSparkContext getSparkContext() {
+    public static JavaSparkContext getSparkContext(String AppName) {
+        SparkConf conf = new SparkConf().setAppName(AppName).setMaster("local[*]");
+        JavaSparkContext sc = new JavaSparkContext(conf);
         return sc;
     }
 }

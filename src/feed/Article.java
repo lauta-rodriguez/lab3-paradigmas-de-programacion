@@ -32,10 +32,11 @@ import topic.Sports.F1;
 import topic.Sports.Futbol;
 import topic.Sports.Sports;
 import topic.Sports.Tennis;
+import java.io.Serializable;
 
 /*Esta clase modela el contenido de un articulo (ie, un item en el caso del rss feed) */
 
-public class Article {
+public class Article implements Serializable {
 	private String title;
 	private String text;
 	private Date publicationDate;
@@ -101,6 +102,10 @@ public class Article {
 
 	public Date getPublicationDate() {
 		return publicationDate;
+	}
+
+	public List<NamedEntity> getNamedEntityList() {
+		return namedEntityList;
 	}
 
 	public void setPublicationDate(Date publicationDate) {
@@ -181,20 +186,22 @@ public class Article {
 					ne.getTopic().incrementFrequency();
 				}
 
-				ne.prettyPrint();
+				// ne.prettyPrint();
 			}
 		}
 	}
 
 	public void prettyPrint() {
 		System.out
-				.println("**********************************************************************************************");
+				.println(
+						"**********************************************************************************************");
 		System.out.println("Title: " + this.getTitle());
 		System.out.println("Publication Date: " + this.getPublicationDate());
 		System.out.println("Link: " + this.getLink());
 		System.out.println("Text: " + this.getText());
 		System.out
-				.println("**********************************************************************************************");
+				.println(
+						"**********************************************************************************************");
 
 	}
 
