@@ -10,7 +10,7 @@ import java.util.List;
 public class SparkWordCount {
 
     public static void main(String[] args) {
-        JavaSparkContext sc = SparkUtil.getSparkContext();
+        JavaSparkContext sc = SparkUtil.getSparkContext("Spark Word Count");
 
         try {
 
