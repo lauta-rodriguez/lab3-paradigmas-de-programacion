@@ -1,13 +1,14 @@
 package parser;
 
-import feed.Article;
-import java.util.List;
 import java.util.ArrayList;
-
 import java.util.Date;
+import java.util.List;
+
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.json.JSONException;
+import org.json.JSONObject;
+
+import feed.Article;
 
 /* Esta clase se encarga de parsear los resultados del httpRequester en una lista de articulos
  * */

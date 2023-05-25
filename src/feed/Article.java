@@ -1,25 +1,25 @@
 package feed;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
-import java.io.Serializable;
 
 import namedEntity.NamedEntity;
-import namedEntity.classes.Organization.Organization;
+import namedEntity.classes.CDate.CDate;
 import namedEntity.classes.Event.Event;
+import namedEntity.classes.Organization.Organization;
 import namedEntity.classes.Person.Lastname;
 import namedEntity.classes.Person.Name;
 import namedEntity.classes.Person.Title;
-import namedEntity.classes.Place.City;
 import namedEntity.classes.Place.Address;
-import namedEntity.classes.Place.Place;
+import namedEntity.classes.Place.City;
 import namedEntity.classes.Place.Country;
+import namedEntity.classes.Place.Place;
 import namedEntity.classes.Product.Product;
-import namedEntity.classes.CDate.CDate;
 import namedEntity.heuristic.Heuristic;
 import topic.Topic;
 import topic.Culture.Cine;

@@ -1,28 +1,22 @@
-import java.util.List;
-
-import httpRequest.httpRequester;
-
-import feed.Article;
-import feed.Feed;
-import feed.GlobalFeed;
-
-import parser.GeneralParser;
-import parser.RedditParser;
-import parser.RssParser;
-import parser.SubscriptionParser;
-
-import subscription.SingleSubscription;
-import subscription.Subscription;
-
-import namedEntity.heuristic.Heuristic;
-import namedEntity.heuristic.QuickHeuristic;
-
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 
+import feed.Article;
+import feed.Feed;
+import feed.GlobalFeed;
+import httpRequest.httpRequester;
+import namedEntity.heuristic.Heuristic;
+import namedEntity.heuristic.QuickHeuristic;
+import parser.GeneralParser;
+import parser.RedditParser;
+import parser.RssParser;
+import parser.SubscriptionParser;
 import scala.Tuple2;
+import subscription.SingleSubscription;
+import subscription.Subscription;
 
 public class FeedReaderMain {
 
