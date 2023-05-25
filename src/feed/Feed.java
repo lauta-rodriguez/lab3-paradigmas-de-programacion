@@ -16,11 +16,11 @@ public class Feed extends GlobalFeed {
 	public String getSiteName(){
 		return siteName;
 	}
-	
+
 	public void setSiteName(String siteName){
 		this.siteName = siteName;
 	}
-	
+
 	@Override
 	public String toString(){
 		return "Feed [siteName=" + getSiteName() + ", articleList=" + getArticleList() + "]";
@@ -38,26 +38,26 @@ public class Feed extends GlobalFeed {
 			  new Date(),
 			  "https://www.nytimes.com/2023/04/05/technology/bowie-hbcu-tech-intern-pipeline.html"
 			  );
-		 
+
 		  Article a2 = new Article("This Historically Black University Created Its Own Tech Intern Pipeline",
 				  "A new program at Bowie State connects computing students directly with companies, bypassing an often harsh Silicon Valley vetting process",
 				  new Date(),
 				  "https://www.nytimes.com/2023/04/05/technology/bowie-hbcu-tech-intern-pipeline.html"
 				  );
-		  
+
 		  Article a3 = new Article("This Historically Black University Created Its Own Tech Intern Pipeline",
 				  "A new program at Bowie State connects computing students directly with companies, bypassing an often harsh Silicon Valley vetting process",
 				  new Date(),
 				  "https://www.nytimes.com/2023/04/05/technology/bowie-hbcu-tech-intern-pipeline.html"
 				  );
-		  
+
 		  Feed f = new Feed("nytimes");
 		  f.addArticle(a1);
 		  f.addArticle(a2);
 		  f.addArticle(a3);
 
 		  f.prettyPrint();
-		  
+
 	}
-	
+
 }
