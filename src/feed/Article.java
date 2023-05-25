@@ -161,7 +161,7 @@ public class Article implements Serializable {
 			NoSuchMethodException, ClassNotFoundException {
 		String text = this.getTitle() + " " + this.getText();
 
-		String charsToRemove = ".,;:()'\"!?&*\n";
+		String charsToRemove = ".,;:()'\"!?&*‘'“\n";
 		for (char c : charsToRemove.toCharArray()) {
 			text = text.replace(String.valueOf(c), "");
 		}
