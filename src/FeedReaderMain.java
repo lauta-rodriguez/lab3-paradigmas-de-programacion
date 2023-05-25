@@ -4,6 +4,7 @@ import httpRequest.httpRequester;
 
 import feed.Article;
 import feed.Feed;
+import feed.GlobalFeed;
 
 import parser.GeneralParser;
 import parser.RedditParser;
@@ -83,14 +84,15 @@ public class FeedReaderMain {
 		 * se genera el Feed y se computan las entidades nombradas
 		 */
 		else { // args.length == 1
-			/* Llamar al httpRequester para obtener el feed del servidor */
+			GlobalFeed global = new GlobalFeed();
+			Heuristic heuristic = new QuickHeuristic();
+
 			for (int i = 0; i < subscription.getLength(); i++) {
 				SingleSubscription single = subscription.getSingleSubscription(i);
 				String type = single.getUrlType();
 				String rawUrl = single.getUrl();
 
 				GeneralParser<List<Article>> feedParser = null;
-				Heuristic heuristic = new QuickHeuristic();
 
 				/*
 				 * llamada al Parser especifico para extrar los datos necesarios por la
@@ -110,6 +112,8 @@ public class FeedReaderMain {
 					String data = requester.getFeed(url, type);
 
 					List<Article> articleList = feedParser.parse(data);
+
+					global.appendArticleList(articleList);
 
 					/* llamada al constructor de Feed */
 					Feed feed = new Feed(url);
