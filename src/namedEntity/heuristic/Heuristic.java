@@ -5,12 +5,13 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.io.Serializable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public abstract class Heuristic {
+public abstract class Heuristic implements Serializable {
 
 	private static Map<String, String[]> categoryMap = new HashMap<>();
 

@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.io.Serializable;
 
 import namedEntity.NamedEntity;
 import namedEntity.classes.Organization.Organization;
@@ -35,7 +36,7 @@ import topic.Sports.Tennis;
 
 /*Esta clase modela el contenido de un articulo (ie, un item en el caso del rss feed) */
 
-public class Article {
+public class Article implements Serializable {
 	private String title;
 	private String text;
 	private Date publicationDate;
