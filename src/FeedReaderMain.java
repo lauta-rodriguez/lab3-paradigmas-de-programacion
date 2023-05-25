@@ -17,6 +17,13 @@ import subscription.Subscription;
 import namedEntity.heuristic.Heuristic;
 import namedEntity.heuristic.QuickHeuristic;
 
+import java.util.Arrays;
+
+import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.JavaSparkContext;
+
+import scala.Tuple2;
+
 public class FeedReaderMain {
 
 	private static void printHelp() {
@@ -118,25 +125,35 @@ public class FeedReaderMain {
 					/* llamada al constructor de Feed */
 					Feed feed = new Feed(url);
 					feed.setArticleList(articleList);
-
-					/*
-					 * Llamar a la heuristica para que compute las entidades nombradas de cada
-					 * articulos del feed
-					 */
-					for (int k = 0; k < articleList.size(); k++) {
-						try {
-							/* Imprime las entidades nombradas*/
-							System.out
-								.println("**********************************************************************************************");
-							System.out.println("Article: " + articleList.get(k).getTitle());
-							articleList.get(k).computeNamedEntities(heuristic);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-					continue;
 				}
 			}
+
+			// Create a SparkContext
+			JavaSparkContext sc = new JavaSparkContext("local[*]", "ArticleProcessing");
+
+			// Load the articles into RDDs
+			JavaRDD<Article> articles = sc.parallelize(global.getArticleList());
+
+			JavaRDD<Tuple2<String, Integer>> words = articles
+				.flatMap(article -> Arrays.asList(article.getContent().split("\\s+")).iterator())
+				.map(word -> word.replaceAll("$.,;:()'\"!?&*\n\\s", "")) //TODO: fix -> no funciona
+				.filter(word -> heuristic.isEntity(word))
+				.mapToPair(word -> new Tuple2<>(word, 1))
+				.reduceByKey((count1, count2) -> count1 + count2)
+				.map(tuple -> new Tuple2<>(tuple._1(), tuple._2()));
+
+			// collect all partial results
+			List<Tuple2<String, Integer>> result = words.collect();
+
+			//TODO: instanciar las clases correspondientes para cada namedEntity
+
+			// print all results
+			for (Tuple2<String, Integer> tuple : result) {
+				System.out.println(tuple._1() + ": " + tuple._2());
+			}
+
+			// close spark context
+			sc.close();
 		}
 	}
 
