@@ -1,8 +1,10 @@
 import java.util.List;
 
 import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.sql.SparkSession;
+import scala.Tuple2;
 
 import feed.Article;
 import feed.Feed;
@@ -95,6 +97,10 @@ public class SparkFeedReaderMain {
          * se genera el Feed y se computan las entidades nombradas
          */
         else { // args.length == 1
+
+            List<Article> globalArticleList = null;
+            Heuristic heuristic = new QuickHeuristic();
+
             /* Llamar al httpRequester para obtener el feed del servidor */
             for (int i = 0; i < subscription.getLength(); i++) {
                 SingleSubscription single = subscription.getSingleSubscription(i);
@@ -102,7 +108,6 @@ public class SparkFeedReaderMain {
                 String rawUrl = single.getUrl();
 
                 GeneralParser<List<Article>> feedParser = null;
-                Heuristic heuristic = new QuickHeuristic();
 
                 /*
                  * llamada al Parser especifico para extrar los datos necesarios por la
@@ -123,32 +128,58 @@ public class SparkFeedReaderMain {
 
                     List<Article> articleList = feedParser.parse(data);
 
-                    // Convert the list of articles into an RDD
-                    JavaRDD<Article> articleRDD = jsc.parallelize(articleList, articleList.size());
-
-                    // Apply a transformation to each article in the RDD to compute its named
-                    // entities
-                    JavaRDD<Article> namedEntityRDD = articleRDD.map(article -> {
-                        article.computeNamedEntities(heuristic);
-                        return article;
-                    });
-
-                    // Print the named entities for each article
-                    namedEntityRDD.foreach(article -> {
-                        System.out.println("Article: " + article.getTitle());
-                        System.out.println("Named entities: ");
-                        for (NamedEntity ne : article.getNamedEntityList()) {
-                            System.out
-                                    .println("\t\t" + ne.getName() + " - " + ne.getCategory() + " - "
-                                            + ne.getTopic().getName());
-                        }
-                    });
+                    // append the articleList to the globalArticleList
+                    if (globalArticleList == null) {
+                        globalArticleList = articleList;
+                    } else {
+                        globalArticleList.addAll(articleList);
+                    }
 
                 }
+
+            }
+
+            if (globalArticleList == null) {
+                System.out.println("Error: no articles found");
+                return;
+            } else {
+                // Convert the list of articles into an RDD
+                JavaRDD<Article> articleRDD = jsc.parallelize(globalArticleList, globalArticleList.size());
+
+                // Apply a transformation to each article in the RDD to compute its named
+                // entities
+                JavaRDD<List<NamedEntity>> namedEntityRDD = articleRDD.map(article -> {
+                    article.computeNamedEntities(heuristic);
+                    return article.getNamedEntityList();
+                });
+
+                // Flatten the namedEntityRDD into a single RDD of NamedEntity objects
+                JavaRDD<NamedEntity> flatNamedEntityRDD = namedEntityRDD
+                        .flatMap(namedEntityList -> namedEntityList.iterator());
+
+                // Use the mapToPair function to convert each NamedEntity object into a
+                // key-value pair,
+                // where the key is the named entity and the value is 1
+                JavaPairRDD<String, Integer> namedEntityPairRDD = flatNamedEntityRDD
+                        .mapToPair(namedEntity -> new Tuple2<>(namedEntity.getName(), 1));
+
+                // Use the reduceByKey function to calculate the frequency of each named entity
+                JavaPairRDD<String, Integer> namedEntityFrequencyRDD = namedEntityPairRDD
+                        .reduceByKey((count1, count2) -> count1 + count2);
+
+                // Collect the results as a list of key-value pairs
+                List<Tuple2<String, Integer>> namedEntityFrequencyList = namedEntityFrequencyRDD.collect();
+
+                // Print the named entities and their frequencies
+                System.out.println("Named entities and their frequencies: ");
+                for (Tuple2<String, Integer> entry : namedEntityFrequencyList) {
+                    System.out.println(entry._1() + " - " + entry._2());
+                }
+
+                // Stop the SparkSession
+                spark.stop();
             }
         }
 
-        // Stop the SparkSession
-        spark.stop();
     }
 }

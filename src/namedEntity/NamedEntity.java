@@ -1,10 +1,11 @@
 package namedEntity;
 
 import topic.Topic;
+import java.io.Serializable;
 
 /*Esta clase modela la nocion de entidad nombrada*/
 
-public class NamedEntity {
+public class NamedEntity implements Serializable{
 	String name;
 	private String category = "Other";
 	private String parentCategory = "Named Entity";
