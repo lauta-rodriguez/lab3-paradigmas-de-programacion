@@ -96,6 +96,10 @@ public class Article implements Serializable {
 		return text;
 	}
 
+	public String getContent() {
+		return this.title + " " + this.text;
+	}
+
 	public void setText(String text) {
 		this.text = text;
 	}
