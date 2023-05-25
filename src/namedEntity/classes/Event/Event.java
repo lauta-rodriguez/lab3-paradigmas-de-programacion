@@ -51,8 +51,8 @@ public class Event extends namedEntity.NamedEntity {
     this.recurrent = recurrent;
   }
 
-	public String StringifyObject() {
-		return ("[" + this.getName() + ": (" + this.getCategory() + ", " + getFrequency() + ") ");
-	}
+  public String StringifyObject() {
+    return ("[" + this.getName() + ": (" + this.getCategory() + ", " + getFrequency() + ") ");
+  }
 
 }

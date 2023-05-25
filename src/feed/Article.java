@@ -193,13 +193,15 @@ public class Article implements Serializable {
 
 	public void prettyPrint() {
 		System.out
-				.println("**********************************************************************************************");
+				.println(
+						"**********************************************************************************************");
 		System.out.println("Title: " + this.getTitle());
 		System.out.println("Publication Date: " + this.getPublicationDate());
 		System.out.println("Link: " + this.getLink());
 		System.out.println("Text: " + this.getText());
 		System.out
-				.println("**********************************************************************************************");
+				.println(
+						"**********************************************************************************************");
 
 	}
 

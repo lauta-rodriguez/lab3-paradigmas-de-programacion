@@ -38,7 +38,7 @@ public class Product extends namedEntity.NamedEntity {
     this.productor = productor;
   }
 
-	public String StringifyObject() {
-		return ("[" + this.getName() + ": (" + this.getCategory() + ", " + getFrequency() + ") ");
-	}
+  public String StringifyObject() {
+    return ("[" + this.getName() + ": (" + this.getCategory() + ", " + getFrequency() + ") ");
+  }
 }

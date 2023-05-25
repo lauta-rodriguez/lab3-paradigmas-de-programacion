@@ -32,6 +32,6 @@ public class Address extends Place {
   }
 
   public String StringifyObject() {
-		return ("[" + this.getName() + ": (" + this.getCategory() + ", " + getFrequency() + ") ");
-	}
+    return ("[" + this.getName() + ": (" + this.getCategory() + ", " + getFrequency() + ") ");
+  }
 }

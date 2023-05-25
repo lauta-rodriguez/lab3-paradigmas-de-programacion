@@ -135,17 +135,17 @@ public class FeedReaderMain {
 			JavaRDD<Article> articles = sc.parallelize(global.getArticleList());
 
 			JavaRDD<Tuple2<String, Integer>> words = articles
-				.flatMap(article -> Arrays.asList(article.getContent().split("\\s+")).iterator())
-				.map(word -> word.replaceAll("$.,;:()'\"!?&*\n\\s", "")) //TODO: fix -> no funciona
-				.filter(word -> heuristic.isEntity(word))
-				.mapToPair(word -> new Tuple2<>(word, 1))
-				.reduceByKey((count1, count2) -> count1 + count2)
-				.map(tuple -> new Tuple2<>(tuple._1(), tuple._2()));
+					.flatMap(article -> Arrays.asList(article.getContent().split("\\s+")).iterator())
+					.map(word -> word.replaceAll("$.,;:()'\"!?&*\n\\s", "")) // TODO: fix -> no funciona
+					.filter(word -> heuristic.isEntity(word))
+					.mapToPair(word -> new Tuple2<>(word, 1))
+					.reduceByKey((count1, count2) -> count1 + count2)
+					.map(tuple -> new Tuple2<>(tuple._1(), tuple._2()));
 
 			// collect all partial results
 			List<Tuple2<String, Integer>> result = words.collect();
 
-			//TODO: instanciar las clases correspondientes para cada namedEntity
+			// TODO: instanciar las clases correspondientes para cada namedEntity
 
 			// print all results
 			for (Tuple2<String, Integer> tuple : result) {

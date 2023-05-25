@@ -40,8 +40,8 @@ public class CDate extends namedEntity.NamedEntity {
     this.canonicalForm = canonicalForm;
   }
 
-	public String StringifyObject() {
-		return ("[" + this.getName() + ": (" + this.getCategory() + ", " + getFrequency() + ") ");
-	}
+  public String StringifyObject() {
+    return ("[" + this.getName() + ": (" + this.getCategory() + ", " + getFrequency() + ") ");
+  }
 
 }

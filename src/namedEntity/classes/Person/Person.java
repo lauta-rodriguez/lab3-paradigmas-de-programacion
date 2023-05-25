@@ -33,6 +33,6 @@ public class Person extends NamedEntity {
   }
 
   public String StringifyObject() {
-		return ("[" + this.getName() + ": (" + this.getCategory() + ", " + getFrequency() + ") ");
-	}
+    return ("[" + this.getName() + ": (" + this.getCategory() + ", " + getFrequency() + ") ");
+  }
 }
