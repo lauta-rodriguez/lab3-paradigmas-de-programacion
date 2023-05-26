@@ -58,7 +58,6 @@ public class FeedReaderMain {
 				feedParser = new RedditParser();
 			} else {
 				System.out.println("Error: type of feed not supported");
-				continue;
 			}
 
 			for (int j = 0; j < single.getUlrParamsSize(); j++) {
