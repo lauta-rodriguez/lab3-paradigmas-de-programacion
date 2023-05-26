@@ -38,89 +38,48 @@ public class FeedReaderMain {
 		Subscription subscription = new SubscriptionParser()
 				.parse("config/subscriptions.json");
 
+		GlobalFeed global = new GlobalFeed();
+
+		/* Llamar al httpRequester para obtener el feed del servidor */
+		for (int i = 0; i < subscription.getLength(); i++) {
+			SingleSubscription single = subscription.getSingleSubscription(i);
+			String type = single.getUrlType();
+			String rawUrl = single.getUrl();
+
+			GeneralParser<List<Article>> feedParser = null;
+
+			/*
+			 * llamada al Parser especifico para extrar los datos necesarios por la
+			 * aplicacion
+			 */
+			if (type.equals("rss")) {
+				feedParser = new RssParser();
+			} else if (type.equals("reddit")) {
+				feedParser = new RedditParser();
+			} else {
+				System.out.println("Error: type of feed not supported");
+				continue;
+			}
+
+			for (int j = 0; j < single.getUlrParamsSize(); j++) {
+				String url = rawUrl.replace("%s", single.getUlrParams(j));
+				String data = requester.getFeed(url, type);
+
+				List<Article> articleList = feedParser.parse(data);
+
+				global.appendArticleList(articleList);
+
+				/* llamada al constructor de Feed */
+				Feed feed = new Feed(url);
+				feed.setArticleList(articleList);
+			}
+		}
+
 		/* Si se llama al programa sin argumentos, se genera el Feed */
 		if (args.length == 0) {
-
-			/* Llamar al httpRequester para obtener el feed del servidor */
-			for (int i = 0; i < subscription.getLength(); i++) {
-				SingleSubscription single = subscription.getSingleSubscription(i);
-				String type = single.getUrlType();
-				String rawUrl = single.getUrl();
-				GeneralParser<List<Article>> feedParser = null;
-
-				/*
-				 * llamada al Parser especifico para extrar los datos necesarios por la
-				 * aplicacion
-				 */
-				if (type.equals("rss")) {
-					feedParser = new RssParser();
-				} else if (type.equals("reddit")) {
-					feedParser = new RedditParser();
-				} else {
-					System.out.println("Error: type of feed not supported");
-					continue;
-				}
-
-				for (int j = 0; j < single.getUlrParamsSize(); j++) {
-					String url = rawUrl.replace("%s", single.getUlrParams(j));
-					String data = requester.getFeed(url, type);
-
-					List<Article> articleList = feedParser.parse(data);
-
-					/* llamada al constructor de Feed */
-					Feed feed = new Feed(url);
-					feed.setArticleList(articleList);
-
-					/*
-					 * llamada al prettyPrint del Feed para ver los articulos del feed en forma
-					 * legible y amigable para el usuario
-					 */
-					feed.prettyPrint();
-				}
-			}
-
-		}
-		/*
-		 * Si se llama al programa con el argumento -ne
-		 * se genera el Feed y se computan las entidades nombradas
-		 */
-		else { // args.length == 1
-			GlobalFeed global = new GlobalFeed();
+			global.prettyPrint();
+		} else { // args.length == 1 && args[0].equals("-ne")
 			Heuristic heuristic = new QuickHeuristic();
-
-			for (int i = 0; i < subscription.getLength(); i++) {
-				SingleSubscription single = subscription.getSingleSubscription(i);
-				String type = single.getUrlType();
-				String rawUrl = single.getUrl();
-
-				GeneralParser<List<Article>> feedParser = null;
-
-				/*
-				 * llamada al Parser especifico para extrar los datos necesarios por la
-				 * aplicacion
-				 */
-				if (type.equals("rss")) {
-					feedParser = new RssParser();
-				} else if (type.equals("reddit")) {
-					feedParser = new RedditParser();
-				} else {
-					System.out.println("Error: type of feed not supported");
-					continue;
-				}
-
-				for (int j = 0; j < single.getUlrParamsSize(); j++) {
-					String url = rawUrl.replace("%s", single.getUlrParams(j));
-					String data = requester.getFeed(url, type);
-
-					List<Article> articleList = feedParser.parse(data);
-
-					global.appendArticleList(articleList);
-
-					/* llamada al constructor de Feed */
-					Feed feed = new Feed(url);
-					feed.setArticleList(articleList);
-				}
-			}
 
 			// Create a SparkContext
 			JavaSparkContext sc = new JavaSparkContext("local[*]", "ArticleProcessing");
