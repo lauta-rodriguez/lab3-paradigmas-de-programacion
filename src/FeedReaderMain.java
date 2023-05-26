@@ -89,7 +89,7 @@ public class FeedReaderMain {
 
 			JavaRDD<Tuple2<String, Integer>> words = articles
 					.flatMap(article -> Arrays.asList(article.getContent().split("\\s+")).iterator())
-					.map(word -> word.replaceAll("$.,;:()'\"!?&*\n\\s", "")) // TODO: fix -> no funciona
+					.map(word -> word.replaceAll("[$.,;:()'‘\"!?&*\n\\s]", ""))
 					.filter(word -> heuristic.isEntity(word))
 					.mapToPair(word -> new Tuple2<>(word, 1))
 					.reduceByKey((count1, count2) -> count1 + count2)
