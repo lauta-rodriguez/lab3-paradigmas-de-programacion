@@ -24,6 +24,14 @@ public class FeedReaderMain {
 		System.out.println("Please, call this program in correct way: FeedReader [-ne]");
 	}
 
+	private static boolean isWord(String str) {
+		return str.matches("[a-zA-Z0-9]+") && !str.matches("[0-9]+");
+	}
+
+	private static String cleanString(String str) {
+		return str.replaceAll("[.,;:()'\"!?&*‘'“\n\\s]", "");
+	}
+
 	public static void main(String[] args) {
 
 		if (args.length > 1 || (args.length == 1 && !args[0].equals("-ne"))) {
@@ -88,7 +96,8 @@ public class FeedReaderMain {
 
 			JavaRDD<Tuple2<String, Integer>> words = articles
 					.flatMap(article -> Arrays.asList(article.getContent().split("\\s+")).iterator())
-					.map(word -> word.replaceAll("[$.,;:()'‘\"!?&*\n\\s]", ""))
+					.map(str -> cleanString(str))
+					.filter(str -> isWord(str))
 					.filter(word -> heuristic.isEntity(word))
 					.mapToPair(word -> new Tuple2<>(word, 1))
 					.reduceByKey((count1, count2) -> count1 + count2)
