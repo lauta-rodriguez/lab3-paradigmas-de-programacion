@@ -8,24 +8,25 @@ public class Product extends namedEntity.NamedEntity {
 
   public Product(String name, int frequency) {
     super(name, frequency);
+
     this.setCategory("Product");
     totalFrequency += frequency;
-  }
-
-  public static int getTotalFrequency() {
-    return totalFrequency;
   }
 
   public String getComercial() {
     return comercial;
   }
 
-  public void setComercial(String comercial) {
-    this.comercial = comercial;
-  }
-
   public String getProductor() {
     return productor;
+  }
+
+  public static int getTotalFrequency() {
+    return totalFrequency;
+  }
+
+  public void setComercial(String comercial) {
+    this.comercial = comercial;
   }
 
   public void setProductor(String productor) {

@@ -88,7 +88,6 @@ public class FeedReaderMain {
 
 				// add all articles to the list of articles
 				allArticles.addAll(articleList);
-
 			}
 		}
 
@@ -100,6 +99,7 @@ public class FeedReaderMain {
 			}
 
 		} else { // args.length == 1 && args[0].equals("-ne")
+
 			Heuristic heuristic = new QuickHeuristic();
 
 			// Create a SparkContext
@@ -135,6 +135,7 @@ public class FeedReaderMain {
 						| ClassNotFoundException e) {
 					e.printStackTrace();
 				}
+
 			}
 
 			// load total totalFrequency of all subclasses
@@ -150,5 +151,4 @@ public class FeedReaderMain {
 
 		}
 	}
-
 }

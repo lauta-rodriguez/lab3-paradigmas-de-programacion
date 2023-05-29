@@ -9,25 +9,26 @@ public class Lastname extends Person {
 
   public Lastname(String name, int frequency) {
     super(name, frequency);
+
     this.setCategory("Lastname");
     this.setParentCategory("Person");
     totalFrequency += frequency;
-  }
-
-  public static int getTotalFrequency() {
-    return totalFrequency;
   }
 
   public String getCanonicalForm() {
     return canonicalForm;
   }
 
-  public void setCanonicalForm(String canonicalForm) {
-    this.canonicalForm = canonicalForm;
-  }
-
   public String getOrigin() {
     return origin;
+  }
+
+  public static int getTotalFrequency() {
+    return totalFrequency;
+  }
+
+  public void setCanonicalForm(String canonicalForm) {
+    this.canonicalForm = canonicalForm;
   }
 
   public void setOrigin(String origin) {

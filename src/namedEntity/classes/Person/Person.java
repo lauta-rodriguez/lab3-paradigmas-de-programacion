@@ -10,16 +10,17 @@ public class Person extends NamedEntity {
 
   public Person(String name, int frequency) {
     super(name, frequency);
+
     this.setCategory("Person");
     totalFrequency += frequency;
   }
 
-  public static int getTotalFrequency() {
-    return totalFrequency;
-  }
-
   public String getId() {
     return id;
+  }
+
+  public static int getTotalFrequency() {
+    return totalFrequency;
   }
 
   public void setId(String id) {

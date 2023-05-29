@@ -8,17 +8,18 @@ public class Address extends Place {
 
   public Address(String name, int frequency) {
     super(name, frequency);
+
     this.setCategory("Address");
     this.setParentCategory("Place");
     totalFrequency += frequency;
   }
 
-  public static int getTotalFrequency() {
-    return totalFrequency;
-  }
-
   public String getCity() {
     return city;
+  }
+
+  public static int getTotalFrequency() {
+    return totalFrequency;
   }
 
   public void setCity(String city) {

@@ -1,6 +1,7 @@
 package namedEntity.classes.Organization;
 
 public class Organization extends namedEntity.NamedEntity {
+
   private String canonicalForm;
   private int members;
   private String type;
@@ -9,32 +10,33 @@ public class Organization extends namedEntity.NamedEntity {
 
   public Organization(String name, int frequency) {
     super(name, frequency);
+
     this.setCategory("Organization");
     totalFrequency += frequency;
-  }
-
-  public static int getTotalFrequency() {
-    return totalFrequency;
   }
 
   public String getCanonicalForm() {
     return canonicalForm;
   }
 
-  public void setCanonicalForm(String canonicalForm) {
-    this.canonicalForm = canonicalForm;
-  }
-
   public int getMembers() {
     return members;
   }
 
-  public void setMembers(int members) {
-    this.members = members;
-  }
-
   public String getType() {
     return type;
+  }
+
+  public static int getTotalFrequency() {
+    return totalFrequency;
+  }
+
+  public void setCanonicalForm(String canonicalForm) {
+    this.canonicalForm = canonicalForm;
+  }
+
+  public void setMembers(int members) {
+    this.members = members;
   }
 
   public void setType(String type) {

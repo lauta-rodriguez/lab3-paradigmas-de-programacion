@@ -10,33 +10,34 @@ public class Name extends Person {
 
   public Name(String name, int frequency) {
     super(name, frequency);
+
     this.setCategory("Name");
     this.setParentCategory("Person");
     totalFrequency += frequency;
-  }
-
-  public static int getTotalFrequency() {
-    return totalFrequency;
   }
 
   public String getCanonicalForm() {
     return canonicalForm;
   }
 
-  public void setCanonicalForm(String canonicalForm) {
-    this.canonicalForm = canonicalForm;
-  }
-
   public String getOrigin() {
     return origin;
   }
 
-  public void setOrigin(String origin) {
-    this.origin = origin;
-  }
-
   public String[] getVariants() {
     return variants;
+  }
+
+  public static int getTotalFrequency() {
+    return totalFrequency;
+  }
+
+  public void setCanonicalForm(String canonicalForm) {
+    this.canonicalForm = canonicalForm;
+  }
+
+  public void setOrigin(String origin) {
+    this.origin = origin;
   }
 
   public void setVariants(String[] variants) {

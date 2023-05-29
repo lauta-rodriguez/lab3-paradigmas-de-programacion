@@ -10,6 +10,7 @@ import topic.Politics.*;
 import topic.Sports.*;
 
 public class Topic {
+
   private String name = "-";
   private String category = "Other";
   private String parentCategory = "Topic";
@@ -27,8 +28,21 @@ public class Topic {
 
   public Topic(String name, int frequency) {
     this.name = name;
+
     this.frequency = frequency;
-    totalFrequency += frequency;
+    totalFrequency++;
+  }
+
+  public String getName() {
+    return this.name;
+  }
+
+  public String getCategory() {
+    return this.category;
+  }
+
+  public String getParentCategory() {
+    return this.parentCategory;
   }
 
   public static int getTotalFrequency() {
@@ -43,20 +57,12 @@ public class Topic {
     return SUBCLASS_FREQUENCY;
   }
 
-  public String getName() {
-    return this.name;
-  }
-
-  public String getCategory() {
-    return this.category;
+  protected void setName(String name) {
+    this.name = name;
   }
 
   protected void setCategory(String category) {
     this.category = category;
-  }
-
-  public String getParentCategory() {
-    return this.parentCategory;
   }
 
   protected void setParentCategory(String parentCategory) {
@@ -109,11 +115,6 @@ public class Topic {
 
   public String StringifyObject() {
     return "(" + this.getCategory() + ", " + getTotalFrequency() + ")]";
-  }
-
-  public static void main(String[] args) {
-    Topic topic = new Topic("name", 0);
-    System.out.println(topic.StringifyObject());
   }
 
 }

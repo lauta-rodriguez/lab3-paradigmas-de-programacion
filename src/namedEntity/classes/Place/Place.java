@@ -8,16 +8,17 @@ public class Place extends namedEntity.NamedEntity {
 
   public Place(String name, int frequency) {
     super(name, frequency);
+
     this.setCategory("Place");
     totalFrequency += frequency;
   }
 
-  public static int getTotalFrequency() {
-    return totalFrequency;
-  }
-
   public String getId() {
     return id;
+  }
+
+  public static int getTotalFrequency() {
+    return totalFrequency;
   }
 
   public void setId(String id) {

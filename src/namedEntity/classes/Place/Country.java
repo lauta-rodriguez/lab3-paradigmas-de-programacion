@@ -9,25 +9,26 @@ public class Country extends Place {
 
   public Country(String name, int frequency) {
     super(name, frequency);
+
     this.setCategory("Country");
     this.setParentCategory("Place");
     totalFrequency += frequency;
-  }
-
-  public static int getTotalFrequency() {
-    return totalFrequency;
   }
 
   public int getPopulation() {
     return population;
   }
 
-  public void setPopulation(int population) {
-    this.population = population;
-  }
-
   public String getOficialLanguage() {
     return oficialLanguage;
+  }
+
+  public static int getTotalFrequency() {
+    return totalFrequency;
+  }
+
+  public void setPopulation(int population) {
+    this.population = population;
   }
 
   public void setOficialLanguage(String oficialLanguage) {

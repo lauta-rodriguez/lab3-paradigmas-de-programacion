@@ -13,32 +13,33 @@ public class Event extends namedEntity.NamedEntity {
 
   public Event(String name, int frequency) {
     super(name, frequency);
+
     this.setCategory("Event");
     totalFrequency += frequency;
-  }
-
-  public static int getTotalFrequency() {
-    return totalFrequency;
   }
 
   public String getCanonicalForm() {
     return canonicalForm;
   }
 
-  public void setCanonicalForm(String canonicalForm) {
-    this.canonicalForm = canonicalForm;
-  }
-
   public Date getDate() {
     return date;
   }
 
-  public void setDate(Date date) {
-    this.date = date;
-  }
-
   public boolean isRecurrent() {
     return recurrent;
+  }
+
+  public static int getTotalFrequency() {
+    return totalFrequency;
+  }
+
+  public void setCanonicalForm(String canonicalForm) {
+    this.canonicalForm = canonicalForm;
+  }
+
+  public void setDate(Date date) {
+    this.date = date;
   }
 
   public void setRecurrent(boolean recurrent) {

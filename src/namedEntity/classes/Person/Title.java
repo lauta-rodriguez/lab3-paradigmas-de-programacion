@@ -9,25 +9,26 @@ public class Title extends Person {
 
   public Title(String name, int frequency) {
     super(name, frequency);
+
     this.setCategory("Title");
     this.setParentCategory("Person");
     totalFrequency += frequency;
-  }
-
-  public static int getTotalFrequency() {
-    return totalFrequency;
   }
 
   public String getCanonicForm() {
     return canonicForm;
   }
 
-  public void setCanonicForm(String canonicForm) {
-    this.canonicForm = canonicForm;
-  }
-
   public String getProfessional() {
     return professional;
+  }
+
+  public static int getTotalFrequency() {
+    return totalFrequency;
+  }
+
+  public void setCanonicForm(String canonicForm) {
+    this.canonicForm = canonicForm;
   }
 
   public void setProfessional(String professional) {

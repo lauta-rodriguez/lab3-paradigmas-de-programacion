@@ -17,15 +17,15 @@ import topic.Topic;
 
 public class NamedEntity {
 	String name;
+	Topic topic;
+
 	private String category = "Other";
 	private String parentCategory = "Named Entity";
 
-	// named entity class frequency
+	// class frequency
 	private static int totalFrequency = 0;
 	// named entity instance frequency
 	private int frequency = 0;
-
-	Topic topic;
 
 	// dictionary used to map a category to the corresponding subclass
 	private static final Map<String, Class<? extends NamedEntity>> CATEGORY_CLASS_MAP = new HashMap<>();
@@ -44,16 +44,16 @@ public class NamedEntity {
 		return name;
 	}
 
-	public void setName(String name, int frequency) {
-		this.name = name;
+	public Topic getTopic() {
+		return topic;
 	}
 
 	public String getCategory() {
 		return category;
 	}
 
-	protected void setCategory(String category) {
-		this.category = category;
+	protected String getParentCategory() {
+		return this.parentCategory;
 	}
 
 	public static int getTotalFrequency() {
@@ -73,20 +73,20 @@ public class NamedEntity {
 		return sum;
 	}
 
-	public Topic getTopic() {
-		return topic;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public void setTopic(Topic topic) {
 		this.topic = topic;
 	}
 
-	protected void setParentCategory(String parentCategory) {
-		this.parentCategory = parentCategory;
+	protected void setCategory(String category) {
+		this.category = category;
 	}
 
-	protected String getParentCategory() {
-		return this.parentCategory;
+	protected void setParentCategory(String parentCategory) {
+		this.parentCategory = parentCategory;
 	}
 
 	public static NamedEntity generateNamedEntity(String namedEntity, int frequency)
@@ -138,13 +138,10 @@ public class NamedEntity {
 		SUBCLASS_FREQUENCY.put("CDate", CDate.getTotalFrequency());
 	}
 
-	@Override
-	public String toString() {
-		return "ObjectNamedEntity [name=" + name + ", totalFrequency=" + totalFrequency + "]";
-	}
-
-	public String StringifyObject() {
-		return ("[" + this.getName() + ": (" + this.getCategory() + ", " + getTotalFrequency() + ") ");
+	public static void printSubclassFrequency() {
+		for (Map.Entry<String, Integer> entry : SUBCLASS_FREQUENCY.entrySet()) {
+			System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());
+		}
 	}
 
 	public void prettyPrint() {
