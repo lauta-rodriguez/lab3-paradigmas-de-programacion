@@ -2,6 +2,7 @@ package feed;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -161,10 +162,34 @@ public class Article implements Serializable {
 			NoSuchMethodException, ClassNotFoundException {
 		String text = this.getTitle() + " " + this.getText();
 
-		String charsToRemove = ".,;:()'\"!?&*‘'“\n";
-		for (char c : charsToRemove.toCharArray()) {
-			text = text.replace(String.valueOf(c), "");
-		}
+		// Reemplaza los siguientes caracteres .,;:()'\"!?&*‘'“\n por "" (empty string)
+		text = text.replaceAll("[.,;:()'\"!?&*‘'“\n]", "");
+
+		// Divide el texto en palabras
+		String[] words = text.split("\\s+");
+
+		// Filtra palabras vacias
+		words = Arrays.stream(words)
+				.filter(word -> !word.isEmpty())
+				.toArray(String[]::new);
+
+		// Filtra palabras con menos de 3 caracteres
+		words = Arrays.stream(words)
+				.filter(word -> word.length() > 2)
+				.toArray(String[]::new);
+
+		// Filtra palabras que no son alfanumericas
+		words = Arrays.stream(words)
+				.filter(word -> word.matches("[a-zA-Z0-9]+"))
+				.toArray(String[]::new);
+
+		// Filtra numeros
+		words = Arrays.stream(words)
+				.filter(word -> !word.matches("[0-9]+"))
+				.toArray(String[]::new);
+
+		// Reconstruye el texto
+		text = String.join(" ", words);
 
 		for (String s : text.split(" ")) {
 			if (h.isEntity(s)) {
@@ -185,8 +210,6 @@ public class Article implements Serializable {
 					ne.incrementFrequency();
 					ne.getTopic().incrementFrequency();
 				}
-
-				// ne.prettyPrint();
 			}
 		}
 	}
