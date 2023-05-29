@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -6,7 +7,6 @@ import org.apache.spark.api.java.JavaSparkContext;
 
 import feed.Article;
 import feed.Feed;
-import feed.GlobalFeed;
 import httpRequest.httpRequester;
 import namedEntity.heuristic.Heuristic;
 import namedEntity.heuristic.QuickHeuristic;
@@ -19,6 +19,9 @@ import subscription.SingleSubscription;
 import subscription.Subscription;
 
 public class FeedReaderMain {
+
+	private static List<Feed> allFeeds = new ArrayList<Feed>();
+	private static List<Article> allArticles = new ArrayList<Article>();
 
 	private static void printHelp() {
 		System.out.println("Please, call this program in correct way: FeedReader [-ne]");
@@ -46,8 +49,6 @@ public class FeedReaderMain {
 		Subscription subscription = new SubscriptionParser()
 				.parse("config/subscriptions.json");
 
-		GlobalFeed global = new GlobalFeed();
-
 		/* Llamar al httpRequester para obtener el feed del servidor */
 		for (int i = 0; i < subscription.getLength(); i++) {
 			SingleSubscription single = subscription.getSingleSubscription(i);
@@ -74,17 +75,26 @@ public class FeedReaderMain {
 
 				List<Article> articleList = feedParser.parse(data);
 
-				global.appendArticleList(articleList);
-
 				/* llamada al constructor de Feed */
 				Feed feed = new Feed(url);
 				feed.setArticleList(articleList);
+
+				// add this feed to the list of feeds
+				allFeeds.add(feed);
+
+				// add all articles to the list of articles
+				allArticles.addAll(articleList);
+
 			}
 		}
 
 		/* Si se llama al programa sin argumentos, se genera el Feed */
 		if (args.length == 0) {
-			global.prettyPrint();
+
+			for (Feed feed : allFeeds) {
+				feed.prettyPrint();
+			}
+
 		} else { // args.length == 1 && args[0].equals("-ne")
 			Heuristic heuristic = new QuickHeuristic();
 
@@ -92,7 +102,7 @@ public class FeedReaderMain {
 			JavaSparkContext sc = new JavaSparkContext("local[*]", "ArticleProcessing");
 
 			// Load the articles into RDDs
-			JavaRDD<Article> articles = sc.parallelize(global.getArticleList());
+			JavaRDD<Article> articles = sc.parallelize(allArticles);
 
 			JavaRDD<Tuple2<String, Integer>> words = articles
 					.flatMap(article -> Arrays.asList(article.getContent().split("\\s+")).iterator())
