@@ -34,7 +34,7 @@ public abstract class Heuristic implements Serializable {
 		}
 	}
 
-	public String getCategory(String entity) {
+	public static String getCategory(String entity) {
 		String[] category = categoryMap.get(entity);
 
 		if (category != null) {
@@ -44,7 +44,7 @@ public abstract class Heuristic implements Serializable {
 		return "Other";
 	}
 
-	public String getTopic(String entity) {
+	public static String getTopic(String entity) {
 		String[] category = categoryMap.get(entity);
 
 		if (category != null) {
