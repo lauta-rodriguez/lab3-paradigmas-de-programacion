@@ -39,6 +39,10 @@ public class Topic {
     return frequency;
   }
 
+  public static Map<String, Integer> getSubclassFrequency() {
+    return SUBCLASS_FREQUENCY;
+  }
+
   public String getName() {
     return this.name;
   }
