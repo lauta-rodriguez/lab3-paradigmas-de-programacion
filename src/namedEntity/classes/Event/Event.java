@@ -11,19 +11,14 @@ public class Event extends namedEntity.NamedEntity {
 
   private static int totalFrequency = 0;
 
-  public Event(String name) {
-    super(name);
+  public Event(String name, int frequency) {
+    super(name, frequency);
     this.setCategory("Event");
-    totalFrequency++;
+    totalFrequency += frequency;
   }
 
   public static int getFrequency() {
     return totalFrequency;
-  }
-
-  public void incrementFrequency() {
-    super.incrementFrequency();
-    totalFrequency++;
   }
 
   public String getCanonicalForm() {

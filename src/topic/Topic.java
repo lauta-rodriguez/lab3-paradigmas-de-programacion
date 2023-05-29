@@ -19,17 +19,13 @@ public class Topic {
   // dictionary used to map a topic to the corresponding subclass
   private static final Map<String, Class<? extends Topic>> TOPIC_CLASS_MAP = new HashMap<>();
 
-  public Topic(String name) {
+  public Topic(String name, int frequency) {
     this.name = name;
-    totalFrequency++;
+    totalFrequency += frequency;
   }
 
   public static int getFrequency() {
     return totalFrequency;
-  }
-
-  public void incrementFrequency() {
-    totalFrequency++;
   }
 
   public String getName() {
@@ -85,7 +81,7 @@ public class Topic {
   }
 
   public static void main(String[] args) {
-    Topic topic = new Topic("name");
+    Topic topic = new Topic("name", 0);
     System.out.println(topic.StringifyObject());
   }
 

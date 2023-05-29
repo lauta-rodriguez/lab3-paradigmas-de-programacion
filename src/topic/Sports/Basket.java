@@ -3,20 +3,15 @@ package topic.Sports;
 public class Basket extends Sports {
   private static int totalFrequency = 0;
 
-  public Basket(String name) {
-    super(name);
+  public Basket(String name, int frequency) {
+    super(name, frequency);
     this.setCategory("Basket");
     this.setParentCategory("Sports");
-    totalFrequency++;
+    totalFrequency += frequency;
   }
 
   public static int getFrequency() {
     return totalFrequency;
-  }
-
-  public void incrementFrequency() {
-    super.incrementFrequency();
-    totalFrequency++;
   }
 
   public String StringifyObject() {

@@ -3,20 +3,15 @@ package topic.Politics;
 public class National extends Politics {
   private static int totalFrequency = 0;
 
-  public National(String name) {
-    super(name);
+  public National(String name, int frequency) {
+    super(name, frequency);
     this.setCategory("National");
     this.setParentCategory("Politics");
-    totalFrequency++;
+    totalFrequency += frequency;
   }
 
   public static int getFrequency() {
     return totalFrequency;
-  }
-
-  public void incrementFrequency() {
-    super.incrementFrequency();
-    totalFrequency++;
   }
 
   public String StringifyObject() {

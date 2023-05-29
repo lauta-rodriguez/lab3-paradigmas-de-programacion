@@ -8,19 +8,14 @@ public class CDate extends namedEntity.NamedEntity {
 
   private static int totalFrequency = 0;
 
-  public CDate(String name) {
-    super(name);
+  public CDate(String name, int frequency) {
+    super(name, frequency);
     this.setCategory("CDate");
-    totalFrequency++;
+    totalFrequency += frequency;
   }
 
   public static int getTotalFrequency() {
     return totalFrequency;
-  }
-
-  public void incrementFrequency() {
-    super.incrementFrequency();
-    totalFrequency++;
   }
 
   public java.util.Date getPrecise() {

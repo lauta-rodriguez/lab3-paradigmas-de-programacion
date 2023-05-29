@@ -27,17 +27,17 @@ public class NamedEntity {
 	// dictionary used to map a category to the corresponding subclass
 	private static final Map<String, Class<? extends NamedEntity>> CATEGORY_CLASS_MAP = new HashMap<>();
 
-	public NamedEntity(String name) {
+	public NamedEntity(String name, int frequency) {
 		super();
 		this.name = name;
-		totalFrequency++;
+		totalFrequency += frequency;
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(String name, int frequency) {
 		this.name = name;
 	}
 
@@ -51,10 +51,6 @@ public class NamedEntity {
 
 	public static int getTotalFrequency() {
 		return totalFrequency;
-	}
-
-	public void incrementFrequency() {
-		totalFrequency++;
 	}
 
 	public Topic getTopic() {

@@ -3,19 +3,14 @@ package topic.Politics;
 public class Politics extends topic.Topic {
   private static int totalFrequency = 0;
 
-  public Politics(String name) {
-    super(name);
+  public Politics(String name, int frequency) {
+    super(name, frequency);
     this.setCategory("Politics");
-    totalFrequency++;
+    totalFrequency += frequency;
   }
 
   public static int getFrequency() {
     return totalFrequency;
-  }
-
-  public void incrementFrequency() {
-    super.incrementFrequency();
-    totalFrequency++;
   }
 
   public String StringifyObject() {

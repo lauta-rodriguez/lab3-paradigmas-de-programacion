@@ -8,20 +8,15 @@ public class Name extends Person {
 
   private static int totalFrequency = 0;
 
-  public Name(String name) {
-    super(name);
+  public Name(String name, int frequency) {
+    super(name, frequency);
     this.setCategory("Name");
     this.setParentCategory("Person");
-    totalFrequency++;
+    totalFrequency += frequency;
   }
 
   public static int getFrequency() {
     return totalFrequency;
-  }
-
-  public void incrementFrequency() {
-    super.incrementFrequency();
-    totalFrequency++;
   }
 
   public String getCanonicalForm() {

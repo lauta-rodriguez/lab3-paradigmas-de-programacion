@@ -3,19 +3,14 @@ package topic.Sports;
 public class Futbol extends Sports {
   private static int totalFrequency = 0;
 
-  public Futbol(String name) {
-    super(name);
+  public Futbol(String name, int frequency) {
+    super(name, frequency);
     this.setCategory("Futbol");
     this.setParentCategory("Sports");
   }
 
   public static int getFrequency() {
     return totalFrequency;
-  }
-
-  public void incrementFrequency() {
-    super.incrementFrequency();
-    totalFrequency++;
   }
 
   public String StringifyObject() {

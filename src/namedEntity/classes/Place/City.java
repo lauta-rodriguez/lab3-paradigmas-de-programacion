@@ -8,20 +8,15 @@ public class City extends Place {
 
   private static int totalFrequency = 0;
 
-  public City(String name) {
-    super(name);
+  public City(String name, int frequency) {
+    super(name, frequency);
     this.setCategory("City");
     this.setParentCategory("Place");
-    totalFrequency++;
+    totalFrequency += frequency;
   }
 
   public static int getFrequency() {
     return totalFrequency;
-  }
-
-  public void incrementFrequency() {
-    super.incrementFrequency();
-    totalFrequency++;
   }
 
   public int getPopulation() {

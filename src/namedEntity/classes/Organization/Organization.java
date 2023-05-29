@@ -7,19 +7,14 @@ public class Organization extends namedEntity.NamedEntity {
 
   private static int totalFrequency = 0;
 
-  public Organization(String name) {
-    super(name);
+  public Organization(String name, int frequency) {
+    super(name, frequency);
     this.setCategory("Organization");
-    totalFrequency++;
+    totalFrequency += frequency;
   }
 
   public static int getFrequency() {
     return totalFrequency;
-  }
-
-  public void incrementFrequency() {
-    super.incrementFrequency();
-    totalFrequency++;
   }
 
   public String getCanonicalForm() {

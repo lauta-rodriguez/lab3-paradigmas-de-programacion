@@ -6,19 +6,14 @@ public class Product extends namedEntity.NamedEntity {
 
   private static int totalFrequency = 0;
 
-  public Product(String name) {
-    super(name);
+  public Product(String name, int frequency) {
+    super(name, frequency);
     this.setCategory("Product");
-    totalFrequency++;
+    totalFrequency += frequency;
   }
 
   public static int getFrequency() {
     return totalFrequency;
-  }
-
-  public void incrementFrequency() {
-    super.incrementFrequency();
-    totalFrequency++;
   }
 
   public String getComercial() {

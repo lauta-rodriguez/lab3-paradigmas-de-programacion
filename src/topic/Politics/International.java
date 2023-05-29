@@ -3,20 +3,15 @@ package topic.Politics;
 public class International extends Politics {
   private static int totalFrequency = 0;
 
-  public International(String name) {
-    super(name);
+  public International(String name, int frequency) {
+    super(name, frequency);
     this.setCategory("International");
     this.setParentCategory("Politics");
-    totalFrequency++;
+    totalFrequency += frequency;
   }
 
   public static int getFrequency() {
     return totalFrequency;
-  }
-
-  public void incrementFrequency() {
-    super.incrementFrequency();
-    totalFrequency++;
   }
 
   public String StringifyObject() {

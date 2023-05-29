@@ -6,20 +6,15 @@ public class Address extends Place {
 
   private static int totalFrequency = 0;
 
-  public Address(String name) {
-    super(name);
+  public Address(String name, int frequency) {
+    super(name, frequency);
     this.setCategory("Address");
     this.setParentCategory("Place");
-    totalFrequency++;
+    totalFrequency += frequency;
   }
 
   public static int getTotalFrequency() {
     return totalFrequency;
-  }
-
-  public void incrementFrequency() {
-    super.incrementFrequency();
-    totalFrequency++;
   }
 
   public String getCity() {

@@ -3,19 +3,14 @@ package topic.Culture;
 public class Culture extends topic.Topic {
   private static int totalFrequency = 0;
 
-  public Culture(String name) {
-    super(name);
+  public Culture(String name, int frequency) {
+    super(name, frequency);
     this.setCategory("Culture");
-    totalFrequency++;
+    totalFrequency += frequency;
   }
 
   public static int getFrequency() {
     return totalFrequency;
-  }
-
-  public void incrementFrequency() {
-    super.incrementFrequency();
-    totalFrequency++;
   }
 
   public String StringifyObject() {

@@ -7,20 +7,15 @@ public class Title extends Person {
 
   private static int totalFrequency = 0;
 
-  public Title(String name) {
-    super(name);
+  public Title(String name, int frequency) {
+    super(name, frequency);
     this.setCategory("Title");
     this.setParentCategory("Person");
-    totalFrequency++;
+    totalFrequency += frequency;
   }
 
   public static int getFrequency() {
     return totalFrequency;
-  }
-
-  public void incrementFrequency() {
-    super.incrementFrequency();
-    totalFrequency++;
   }
 
   public String getCanonicForm() {

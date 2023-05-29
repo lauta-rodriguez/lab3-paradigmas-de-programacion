@@ -8,19 +8,14 @@ public class Person extends NamedEntity {
 
   private static int totalFrequency = 0;
 
-  public Person(String name) {
-    super(name);
+  public Person(String name, int frequency) {
+    super(name, frequency);
     this.setCategory("Person");
-    totalFrequency++;
+    totalFrequency += frequency;
   }
 
   public static int getFrequency() {
     return totalFrequency;
-  }
-
-  public void incrementFrequency() {
-    super.incrementFrequency();
-    totalFrequency++;
   }
 
   public String getId() {
