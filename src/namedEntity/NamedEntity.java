@@ -64,6 +64,15 @@ public class NamedEntity {
 		return frequency;
 	}
 
+	public static int getTotalNamedEntities() {
+		int sum = 0;
+		for (String key : SUBCLASS_FREQUENCY.keySet()) {
+			sum += SUBCLASS_FREQUENCY.get(key);
+		}
+
+		return sum;
+	}
+
 	public Topic getTopic() {
 		return topic;
 	}
