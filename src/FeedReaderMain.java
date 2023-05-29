@@ -1,3 +1,4 @@
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,6 +9,7 @@ import org.apache.spark.api.java.JavaSparkContext;
 import feed.Article;
 import feed.Feed;
 import httpRequest.httpRequester;
+import namedEntity.NamedEntity;
 import namedEntity.heuristic.Heuristic;
 import namedEntity.heuristic.QuickHeuristic;
 import parser.GeneralParser;
@@ -22,6 +24,7 @@ public class FeedReaderMain {
 
 	private static List<Feed> allFeeds = new ArrayList<Feed>();
 	private static List<Article> allArticles = new ArrayList<Article>();
+	private static List<NamedEntity> namedEntities = new ArrayList<NamedEntity>();
 
 	private static void printHelp() {
 		System.out.println("Please, call this program in correct way: FeedReader [-ne]");
@@ -116,15 +119,23 @@ public class FeedReaderMain {
 			// collect all partial results
 			List<Tuple2<String, Integer>> result = words.collect();
 
-			// TODO: instanciar las clases correspondientes para cada namedEntity
-
-			// print all results
-			for (Tuple2<String, Integer> tuple : result) {
-				System.out.println(tuple._1() + ": " + tuple._2());
-			}
-
 			// close spark context
 			sc.close();
+
+			// instantiate named entities
+			for (Tuple2<String, Integer> tuple : result) {
+				try {
+					NamedEntity ne = NamedEntity.generateNamedEntity(tuple._1(), tuple._2());
+
+					namedEntities.add(ne);
+
+				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+						| InvocationTargetException | NoSuchMethodException | SecurityException
+						| ClassNotFoundException e) {
+					e.printStackTrace();
+				}
+
+			}
 		}
 	}
 
