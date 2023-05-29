@@ -15,7 +15,7 @@ public class City extends Place {
     totalFrequency += frequency;
   }
 
-  public static int getFrequency() {
+  public static int getTotalFrequency() {
     return totalFrequency;
   }
 
@@ -44,6 +44,6 @@ public class City extends Place {
   }
 
   public String StringifyObject() {
-    return ("[" + this.getName() + ": (" + this.getCategory() + ", " + getFrequency() + ") ");
+    return ("[" + this.getName() + ": (" + this.getCategory() + ", " + getTotalFrequency() + ") ");
   }
 }

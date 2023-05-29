@@ -17,7 +17,7 @@ public class Event extends namedEntity.NamedEntity {
     totalFrequency += frequency;
   }
 
-  public static int getFrequency() {
+  public static int getTotalFrequency() {
     return totalFrequency;
   }
 

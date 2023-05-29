@@ -9,12 +9,12 @@ public class Culture extends topic.Topic {
     totalFrequency += frequency;
   }
 
-  public static int getFrequency() {
+  public static int getTotalFrequency() {
     return totalFrequency;
   }
 
   public String StringifyObject() {
-    return "(" + this.getCategory() + ", " + getFrequency() + ")]";
+    return "(" + this.getCategory() + ", " + getTotalFrequency() + ")]";
   }
 
 }

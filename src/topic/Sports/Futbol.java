@@ -9,11 +9,11 @@ public class Futbol extends Sports {
     this.setParentCategory("Sports");
   }
 
-  public static int getFrequency() {
+  public static int getTotalFrequency() {
     return totalFrequency;
   }
 
   public String StringifyObject() {
-    return "(" + this.getCategory() + ", " + getFrequency() + ")]";
+    return "(" + this.getCategory() + ", " + getTotalFrequency() + ")]";
   }
 }

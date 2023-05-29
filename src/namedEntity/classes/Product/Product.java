@@ -12,7 +12,7 @@ public class Product extends namedEntity.NamedEntity {
     totalFrequency += frequency;
   }
 
-  public static int getFrequency() {
+  public static int getTotalFrequency() {
     return totalFrequency;
   }
 
@@ -33,6 +33,6 @@ public class Product extends namedEntity.NamedEntity {
   }
 
   public String StringifyObject() {
-    return ("[" + this.getName() + ": (" + this.getCategory() + ", " + getFrequency() + ") ");
+    return ("[" + this.getName() + ": (" + this.getCategory() + ", " + getTotalFrequency() + ") ");
   }
 }

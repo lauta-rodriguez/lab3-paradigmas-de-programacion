@@ -24,7 +24,7 @@ public class Topic {
     totalFrequency += frequency;
   }
 
-  public static int getFrequency() {
+  public static int getTotalFrequency() {
     return totalFrequency;
   }
 
@@ -77,7 +77,7 @@ public class Topic {
   }
 
   public String StringifyObject() {
-    return "(" + this.getCategory() + ", " + getFrequency() + ")]";
+    return "(" + this.getCategory() + ", " + getTotalFrequency() + ")]";
   }
 
   public static void main(String[] args) {
