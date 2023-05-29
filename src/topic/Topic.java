@@ -63,7 +63,7 @@ public class Topic {
     this.parentCategory = parentCategory;
   }
 
-  public static Topic generateTopic(String namedEntity, int totalFrequency)
+  public static Topic generateTopic(String namedEntity, int frequency)
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException, ClassNotFoundException {
 
@@ -72,7 +72,7 @@ public class Topic {
     Class<? extends Topic> t_action = TOPIC_CLASS_MAP.getOrDefault(topic,
         Topic.class);
     Topic t = t_action.getDeclaredConstructor(String.class,
-        int.class).newInstance(topic, totalFrequency);
+        int.class).newInstance(topic, frequency);
 
     return t;
   }
