@@ -148,7 +148,11 @@ public class NamedEntity {
 	}
 
 	public void prettyPrint() {
-		System.out.println(this.StringifyObject() + " " + this.getTopic().StringifyObject());
+		System.out.println("\"" + this.getName() + "\"" + " occurs in:\n"
+				+ "\tCategory \"" + this.getCategory() + "\": " + this.getFrequency() + " of "
+				+ SUBCLASS_FREQUENCY.get(this.getCategory()) + " times\n"
+				+ "\tTopic    \"" + this.getTopic().getName() + "\": " + this.getTopic().getFrequency() + " of "
+				+ Topic.getSubclassFrequency().get(this.getTopic().getCategory()) + " times\n");
 	}
 
 }
