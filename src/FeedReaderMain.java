@@ -19,6 +19,7 @@ import parser.SubscriptionParser;
 import scala.Tuple2;
 import subscription.SingleSubscription;
 import subscription.Subscription;
+import topic.Topic;
 
 public class FeedReaderMain {
 
@@ -134,8 +135,19 @@ public class FeedReaderMain {
 						| ClassNotFoundException e) {
 					e.printStackTrace();
 				}
-
 			}
+
+			// load total totalFrequency of all subclasses
+			NamedEntity.loadSubclassFrequency();
+			Topic.loadSubclassFrequency();
+
+			System.out.println("\nFound " + NamedEntity.getTotalNamedEntities() + " occurrences of named entities\n");
+
+			// print info about all named entities
+			for (NamedEntity ne : namedEntities) {
+				ne.prettyPrint();
+			}
+
 		}
 	}
 
