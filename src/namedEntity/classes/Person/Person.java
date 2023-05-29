@@ -6,22 +6,21 @@ public class Person extends NamedEntity {
 
   protected String id = "ID PERSON";
 
-  private static int frequency = 0;
+  private static int totalFrequency = 0;
 
   public Person(String name) {
     super(name);
     this.setCategory("Person");
-    frequency++;
+    totalFrequency++;
   }
 
   public static int getFrequency() {
-    return frequency;
+    return totalFrequency;
   }
 
-  @Override
   public void incrementFrequency() {
     super.incrementFrequency();
-    frequency++;
+    totalFrequency++;
   }
 
   public String getId() {

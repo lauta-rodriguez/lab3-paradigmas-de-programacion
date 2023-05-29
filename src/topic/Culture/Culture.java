@@ -1,22 +1,21 @@
 package topic.Culture;
 
 public class Culture extends topic.Topic {
-  private static int frequency = 0;
+  private static int totalFrequency = 0;
 
   public Culture(String name) {
     super(name);
     this.setCategory("Culture");
-    frequency++;
+    totalFrequency++;
   }
 
   public static int getFrequency() {
-    return frequency;
+    return totalFrequency;
   }
 
-  @Override
   public void incrementFrequency() {
     super.incrementFrequency();
-    frequency++;
+    totalFrequency++;
   }
 
   public String StringifyObject() {

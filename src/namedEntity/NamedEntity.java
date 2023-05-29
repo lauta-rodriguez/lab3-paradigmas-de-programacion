@@ -20,7 +20,7 @@ public class NamedEntity {
 	private String category = "Other";
 	private String parentCategory = "Named Entity";
 
-	private static int frequency = 0;
+	private static int totalFrequency = 0;
 
 	Topic topic;
 
@@ -30,7 +30,7 @@ public class NamedEntity {
 	public NamedEntity(String name) {
 		super();
 		this.name = name;
-		frequency++;
+		totalFrequency++;
 	}
 
 	public String getName() {
@@ -49,12 +49,12 @@ public class NamedEntity {
 		this.category = category;
 	}
 
-	public static int getFrequency() {
-		return frequency;
+	public static int getTotalFrequency() {
+		return totalFrequency;
 	}
 
 	public void incrementFrequency() {
-		frequency++;
+		totalFrequency++;
 	}
 
 	public Topic getTopic() {
@@ -108,11 +108,11 @@ public class NamedEntity {
 
 	@Override
 	public String toString() {
-		return "ObjectNamedEntity [name=" + name + ", frequency=" + frequency + "]";
+		return "ObjectNamedEntity [name=" + name + ", totalFrequency=" + totalFrequency + "]";
 	}
 
 	public String StringifyObject() {
-		return ("[" + this.getName() + ": (" + this.getCategory() + ", " + getFrequency() + ") ");
+		return ("[" + this.getName() + ": (" + this.getCategory() + ", " + getTotalFrequency() + ") ");
 	}
 
 	public void prettyPrint() {

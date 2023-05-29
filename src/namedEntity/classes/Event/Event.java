@@ -9,22 +9,21 @@ public class Event extends namedEntity.NamedEntity {
   private Date date;
   private boolean recurrent;
 
-  private static int frequency = 0;
+  private static int totalFrequency = 0;
 
   public Event(String name) {
     super(name);
     this.setCategory("Event");
-    frequency++;
+    totalFrequency++;
   }
 
   public static int getFrequency() {
-    return frequency;
+    return totalFrequency;
   }
 
-  @Override
   public void incrementFrequency() {
     super.incrementFrequency();
-    frequency++;
+    totalFrequency++;
   }
 
   public String getCanonicalForm() {
@@ -52,7 +51,7 @@ public class Event extends namedEntity.NamedEntity {
   }
 
   public String StringifyObject() {
-    return ("[" + this.getName() + ": (" + this.getCategory() + ", " + getFrequency() + ") ");
+    return ("[" + this.getName() + ": (" + this.getCategory() + ", " + getTotalFrequency() + ") ");
   }
 
 }

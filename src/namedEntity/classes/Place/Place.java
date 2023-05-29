@@ -4,22 +4,21 @@ public class Place extends namedEntity.NamedEntity {
 
   private String id;
 
-  private static int frequency = 0;
+  private static int totalFrequency = 0;
 
   public Place(String name) {
     super(name);
     this.setCategory("Place");
-    frequency++;
+    totalFrequency++;
   }
 
   public static int getFrequency() {
-    return frequency;
+    return totalFrequency;
   }
 
-  @Override
   public void incrementFrequency() {
     super.incrementFrequency();
-    frequency++;
+    totalFrequency++;
   }
 
   public String getId() {

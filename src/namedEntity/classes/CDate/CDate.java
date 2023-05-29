@@ -6,22 +6,21 @@ public class CDate extends namedEntity.NamedEntity {
   private java.util.Date precise;
   private String canonicalForm;
 
-  private static int frequency = 0;
+  private static int totalFrequency = 0;
 
   public CDate(String name) {
     super(name);
     this.setCategory("CDate");
-    frequency++;
+    totalFrequency++;
   }
 
-  public static int getFrequency() {
-    return frequency;
+  public static int getTotalFrequency() {
+    return totalFrequency;
   }
 
-  @Override
   public void incrementFrequency() {
     super.incrementFrequency();
-    frequency++;
+    totalFrequency++;
   }
 
   public java.util.Date getPrecise() {
@@ -41,7 +40,7 @@ public class CDate extends namedEntity.NamedEntity {
   }
 
   public String StringifyObject() {
-    return ("[" + this.getName() + ": (" + this.getCategory() + ", " + getFrequency() + ") ");
+    return ("[" + this.getName() + ": (" + this.getCategory() + ", " + getTotalFrequency() + ") ");
   }
 
 }

@@ -1,23 +1,22 @@
 package topic.Sports;
 
 public class Basket extends Sports {
-  private static int frequency = 0;
+  private static int totalFrequency = 0;
 
   public Basket(String name) {
     super(name);
     this.setCategory("Basket");
     this.setParentCategory("Sports");
-    frequency++;
+    totalFrequency++;
   }
 
   public static int getFrequency() {
-    return frequency;
+    return totalFrequency;
   }
 
-  @Override
   public void incrementFrequency() {
     super.incrementFrequency();
-    frequency++;
+    totalFrequency++;
   }
 
   public String StringifyObject() {

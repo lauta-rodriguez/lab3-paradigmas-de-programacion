@@ -4,23 +4,22 @@ public class Address extends Place {
 
   private String city;
 
-  private static int frequency = 0;
+  private static int totalFrequency = 0;
 
   public Address(String name) {
     super(name);
     this.setCategory("Address");
     this.setParentCategory("Place");
-    frequency++;
+    totalFrequency++;
   }
 
-  public static int getFrequency() {
-    return frequency;
+  public static int getTotalFrequency() {
+    return totalFrequency;
   }
 
-  @Override
   public void incrementFrequency() {
     super.incrementFrequency();
-    frequency++;
+    totalFrequency++;
   }
 
   public String getCity() {
@@ -32,6 +31,6 @@ public class Address extends Place {
   }
 
   public String StringifyObject() {
-    return ("[" + this.getName() + ": (" + this.getCategory() + ", " + getFrequency() + ") ");
+    return ("[" + this.getName() + ": (" + this.getCategory() + ", " + getTotalFrequency() + ") ");
   }
 }

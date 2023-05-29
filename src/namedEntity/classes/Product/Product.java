@@ -4,22 +4,21 @@ public class Product extends namedEntity.NamedEntity {
   private String comercial;
   private String productor;
 
-  private static int frequency = 0;
+  private static int totalFrequency = 0;
 
   public Product(String name) {
     super(name);
     this.setCategory("Product");
-    frequency++;
+    totalFrequency++;
   }
 
   public static int getFrequency() {
-    return frequency;
+    return totalFrequency;
   }
 
-  @Override
   public void incrementFrequency() {
     super.incrementFrequency();
-    frequency++;
+    totalFrequency++;
   }
 
   public String getComercial() {

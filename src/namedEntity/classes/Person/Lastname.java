@@ -5,23 +5,22 @@ public class Lastname extends Person {
   private String canonicalForm;
   private String origin;
 
-  private static int frequency = 0;
+  private static int totalFrequency = 0;
 
   public Lastname(String name) {
     super(name);
     this.setCategory("Lastname");
     this.setParentCategory("Person");
-    frequency++;
+    totalFrequency++;
   }
 
-  public static int getFrequency() {
-    return frequency;
+  public static int getTotalFrequency() {
+    return totalFrequency;
   }
 
-  @Override
   public void incrementFrequency() {
     super.incrementFrequency();
-    frequency++;
+    totalFrequency++;
   }
 
   public String getCanonicalForm() {

@@ -5,23 +5,22 @@ public class Title extends Person {
   private String canonicForm;
   private String professional;
 
-  private static int frequency = 0;
+  private static int totalFrequency = 0;
 
   public Title(String name) {
     super(name);
     this.setCategory("Title");
     this.setParentCategory("Person");
-    frequency++;
+    totalFrequency++;
   }
 
   public static int getFrequency() {
-    return frequency;
+    return totalFrequency;
   }
 
-  @Override
   public void incrementFrequency() {
     super.incrementFrequency();
-    frequency++;
+    totalFrequency++;
   }
 
   public String getCanonicForm() {

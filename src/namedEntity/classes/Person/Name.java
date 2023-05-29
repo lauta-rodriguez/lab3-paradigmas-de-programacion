@@ -6,23 +6,22 @@ public class Name extends Person {
   private String origin;
   private String[] variants;
 
-  private static int frequency = 0;
+  private static int totalFrequency = 0;
 
   public Name(String name) {
     super(name);
     this.setCategory("Name");
     this.setParentCategory("Person");
-    frequency++;
+    totalFrequency++;
   }
 
   public static int getFrequency() {
-    return frequency;
+    return totalFrequency;
   }
 
-  @Override
   public void incrementFrequency() {
     super.incrementFrequency();
-    frequency++;
+    totalFrequency++;
   }
 
   public String getCanonicalForm() {
