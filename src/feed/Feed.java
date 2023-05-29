@@ -2,10 +2,13 @@ package feed;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /*Esta clase modela la lista de articulos de un determinado feed*/
-public class Feed extends GlobalFeed {
+public class Feed {
+
 	String siteName;
+	List<Article> articleList;
 
 	public Feed(String siteName) {
 		super();
@@ -17,8 +20,20 @@ public class Feed extends GlobalFeed {
 		return siteName;
 	}
 
+	public List<Article> getArticleList() {
+		return articleList;
+	}
+
 	public void setSiteName(String siteName) {
 		this.siteName = siteName;
+	}
+
+	public void setArticleList(List<Article> articleList) {
+		this.articleList = articleList;
+	}
+
+	public void addArticle(Article a) {
+		this.getArticleList().add(a);
 	}
 
 	@Override
