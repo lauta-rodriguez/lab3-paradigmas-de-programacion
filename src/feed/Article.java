@@ -1,38 +1,11 @@
 package feed;
 
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import namedEntity.NamedEntity;
-import namedEntity.classes.CDate.CDate;
-import namedEntity.classes.Event.Event;
-import namedEntity.classes.Organization.Organization;
-import namedEntity.classes.Person.Lastname;
-import namedEntity.classes.Person.Name;
-import namedEntity.classes.Person.Title;
-import namedEntity.classes.Place.Address;
-import namedEntity.classes.Place.City;
-import namedEntity.classes.Place.Country;
-import namedEntity.classes.Place.Place;
-import namedEntity.classes.Product.Product;
-import namedEntity.heuristic.Heuristic;
-import topic.Topic;
-import topic.Culture.Cine;
-import topic.Culture.Culture;
-import topic.Culture.Music;
-import topic.Politics.International;
-import topic.Politics.National;
-import topic.Politics.Politics;
-import topic.Sports.Basket;
-import topic.Sports.F1;
-import topic.Sports.Futbol;
-import topic.Sports.Sports;
-import topic.Sports.Tennis;
 
 /*Esta clase modela el contenido de un articulo (ie, un item en el caso del rss feed) */
 
@@ -50,38 +23,6 @@ public class Article implements Serializable {
 		this.text = text;
 		this.publicationDate = publicationDate;
 		this.link = link;
-	}
-
-	private static final Map<String, Class<? extends NamedEntity>> CATEGORY_CLASS_MAP = new HashMap<>();
-
-	static {
-		CATEGORY_CLASS_MAP.put("Lastname", Lastname.class);
-		CATEGORY_CLASS_MAP.put("Name", Name.class);
-		CATEGORY_CLASS_MAP.put("Title", Title.class);
-		CATEGORY_CLASS_MAP.put("Place", Place.class);
-		CATEGORY_CLASS_MAP.put("City", City.class);
-		CATEGORY_CLASS_MAP.put("Country", Country.class);
-		CATEGORY_CLASS_MAP.put("Address", Address.class);
-		CATEGORY_CLASS_MAP.put("Organization", Organization.class);
-		CATEGORY_CLASS_MAP.put("Product", Product.class);
-		CATEGORY_CLASS_MAP.put("Event", Event.class);
-		CATEGORY_CLASS_MAP.put("CDate", CDate.class);
-	}
-
-	private static final Map<String, Class<? extends Topic>> TOPIC_CLASS_MAP = new HashMap<>();
-
-	static {
-		TOPIC_CLASS_MAP.put("Culture", Culture.class);
-		TOPIC_CLASS_MAP.put("Cine", Cine.class);
-		TOPIC_CLASS_MAP.put("Music", Music.class);
-		TOPIC_CLASS_MAP.put("Politics", Politics.class);
-		TOPIC_CLASS_MAP.put("International", International.class);
-		TOPIC_CLASS_MAP.put("National", National.class);
-		TOPIC_CLASS_MAP.put("Sports", Sports.class);
-		TOPIC_CLASS_MAP.put("Futbol", Futbol.class);
-		TOPIC_CLASS_MAP.put("Basket", Basket.class);
-		TOPIC_CLASS_MAP.put("Tennis", Tennis.class);
-		TOPIC_CLASS_MAP.put("F1", F1.class);
 	}
 
 	public String getTitle() {
@@ -133,62 +74,6 @@ public class Article implements Serializable {
 			}
 		}
 		return null;
-	}
-
-	private NamedEntity generateNamedEntity(String namedEntity, String category)
-			throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-			NoSuchMethodException, SecurityException, ClassNotFoundException {
-
-		Class<? extends NamedEntity> action = CATEGORY_CLASS_MAP.getOrDefault(category, NamedEntity.class);
-		NamedEntity ne = action.getDeclaredConstructor(String.class)
-				.newInstance(namedEntity);
-
-		return ne;
-	}
-
-	private Topic generateTopic(String topic)
-			throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-			NoSuchMethodException, SecurityException, ClassNotFoundException {
-
-		Class<? extends Topic> action = TOPIC_CLASS_MAP.getOrDefault(topic, Topic.class);
-		Topic t = action.getDeclaredConstructor(String.class).newInstance(topic);
-
-		return t;
-	}
-
-	public void computeNamedEntities(Heuristic h)
-			throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-			NoSuchMethodException, ClassNotFoundException {
-		String text = this.getTitle() + " " + this.getText();
-
-		String charsToRemove = ".,;:()'\"!?&*\n";
-		for (char c : charsToRemove.toCharArray()) {
-			text = text.replace(String.valueOf(c), "");
-		}
-
-		for (String s : text.split(" ")) {
-			if (h.isEntity(s)) {
-				// ver si la entidad nombrada ya se encuentra en las entidades
-				// de este articulo
-				NamedEntity ne = this.getNamedEntity(s);
-
-				// si no esta, se genera la entidad nombrada y el topic correspondiente
-				if (ne == null) {
-					ne = this.generateNamedEntity(s, h.getCategory(s));
-
-					Topic t = this.generateTopic(h.getTopic(s));
-					ne.setTopic(t);
-
-					this.namedEntityList.add(ne);
-
-				} else { // si esta, incrementa su contador de ocurrencias
-					ne.incrementFrequency();
-					ne.getTopic().incrementFrequency();
-				}
-
-				ne.prettyPrint();
-			}
-		}
 	}
 
 	public void prettyPrint() {
