@@ -113,7 +113,7 @@ public class FeedReaderMain {
 					.map(str -> cleanString(str))
 					.filter(str -> isWord(str))
 					.filter(word -> heuristic.isEntity(word))
-					.mapToPair(word -> new Tuple2<>(word, 1))
+					.mapToPair(ne -> new Tuple2<>(ne, 1))
 					.reduceByKey((count1, count2) -> count1 + count2)
 					.map(tuple -> new Tuple2<>(tuple._1(), tuple._2()));
 
