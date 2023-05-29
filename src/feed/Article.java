@@ -1,11 +1,7 @@
 package feed;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-
-import namedEntity.NamedEntity;
 
 /*Esta clase modela el contenido de un articulo (ie, un item en el caso del rss feed) */
 
@@ -14,8 +10,6 @@ public class Article implements Serializable {
 	private String text;
 	private Date publicationDate;
 	private String link;
-
-	private List<NamedEntity> namedEntityList = new ArrayList<NamedEntity>();
 
 	public Article(String title, String text, Date publicationDate, String link) {
 		super();
@@ -65,15 +59,6 @@ public class Article implements Serializable {
 	public String toString() {
 		return "Article [title=" + title + ", text=" + text + ", publicationDate=" + publicationDate + ", link=" + link
 				+ "]";
-	}
-
-	public NamedEntity getNamedEntity(String namedEntity) {
-		for (NamedEntity n : namedEntityList) {
-			if (n.getName().compareTo(namedEntity) == 0) {
-				return n;
-			}
-		}
-		return null;
 	}
 
 	public void prettyPrint() {
