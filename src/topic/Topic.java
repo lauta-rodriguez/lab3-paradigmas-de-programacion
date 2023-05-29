@@ -14,18 +14,26 @@ public class Topic {
   private String category = "Other";
   private String parentCategory = "Topic";
 
+  // topic class frequency
   private static int totalFrequency = 0;
+  // topic instance frequency
+  private int frequency = 0;
 
   // dictionary used to map a topic to the corresponding subclass
   private static final Map<String, Class<? extends Topic>> TOPIC_CLASS_MAP = new HashMap<>();
 
   public Topic(String name, int frequency) {
     this.name = name;
+    this.frequency = frequency;
     totalFrequency += frequency;
   }
 
   public static int getTotalFrequency() {
     return totalFrequency;
+  }
+
+  public int getFrequency() {
+    return frequency;
   }
 
   public String getName() {

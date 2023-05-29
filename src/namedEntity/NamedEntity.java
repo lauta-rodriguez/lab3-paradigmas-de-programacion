@@ -20,7 +20,10 @@ public class NamedEntity {
 	private String category = "Other";
 	private String parentCategory = "Named Entity";
 
+	// named entity class frequency
 	private static int totalFrequency = 0;
+	// named entity instance frequency
+	private int frequency = 0;
 
 	Topic topic;
 
@@ -30,6 +33,7 @@ public class NamedEntity {
 	public NamedEntity(String name, int frequency) {
 		super();
 		this.name = name;
+		this.frequency = frequency;
 		totalFrequency += frequency;
 	}
 
@@ -51,6 +55,10 @@ public class NamedEntity {
 
 	public static int getTotalFrequency() {
 		return totalFrequency;
+	}
+
+	public int getFrequency() {
+		return frequency;
 	}
 
 	public Topic getTopic() {
