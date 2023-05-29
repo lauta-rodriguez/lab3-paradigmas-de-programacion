@@ -22,6 +22,9 @@ public class Topic {
   // dictionary used to map a topic to the corresponding subclass
   private static final Map<String, Class<? extends Topic>> TOPIC_CLASS_MAP = new HashMap<>();
 
+  // dictionary used to get the total frequency of a category subclass
+  private static final Map<String, Integer> SUBCLASS_FREQUENCY = new HashMap<>();
+
   public Topic(String name, int frequency) {
     this.name = name;
     this.frequency = frequency;
@@ -82,6 +85,22 @@ public class Topic {
     TOPIC_CLASS_MAP.put("Basket", Basket.class);
     TOPIC_CLASS_MAP.put("Tennis", Tennis.class);
     TOPIC_CLASS_MAP.put("F1", F1.class);
+  }
+
+  // dictionary used to get the total frequency of a topic subclass
+  public static void loadSubclassFrequency() {
+    SUBCLASS_FREQUENCY.put("Other", Topic.getTotalFrequency());
+    SUBCLASS_FREQUENCY.put("Culture", Culture.getTotalFrequency());
+    SUBCLASS_FREQUENCY.put("Cine", Cine.getTotalFrequency());
+    SUBCLASS_FREQUENCY.put("Music", Music.getTotalFrequency());
+    SUBCLASS_FREQUENCY.put("Politics", Politics.getTotalFrequency());
+    SUBCLASS_FREQUENCY.put("International", International.getTotalFrequency());
+    SUBCLASS_FREQUENCY.put("National", National.getTotalFrequency());
+    SUBCLASS_FREQUENCY.put("Sports", Sports.getTotalFrequency());
+    SUBCLASS_FREQUENCY.put("Futbol", Futbol.getTotalFrequency());
+    SUBCLASS_FREQUENCY.put("Basket", Basket.getTotalFrequency());
+    SUBCLASS_FREQUENCY.put("Tennis", Tennis.getTotalFrequency());
+    SUBCLASS_FREQUENCY.put("F1", F1.getTotalFrequency());
   }
 
   public String StringifyObject() {

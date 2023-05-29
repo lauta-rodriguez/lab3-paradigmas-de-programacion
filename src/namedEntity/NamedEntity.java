@@ -30,6 +30,9 @@ public class NamedEntity {
 	// dictionary used to map a category to the corresponding subclass
 	private static final Map<String, Class<? extends NamedEntity>> CATEGORY_CLASS_MAP = new HashMap<>();
 
+	// dictionary used to get the total frequency of a category subclass
+	private static final Map<String, Integer> SUBCLASS_FREQUENCY = new HashMap<>();
+
 	public NamedEntity(String name, int frequency) {
 		super();
 		this.name = name;
@@ -108,6 +111,22 @@ public class NamedEntity {
 		CATEGORY_CLASS_MAP.put("Product", Product.class);
 		CATEGORY_CLASS_MAP.put("Event", Event.class);
 		CATEGORY_CLASS_MAP.put("CDate", CDate.class);
+	}
+
+	// dictionary used to get the total frequency of a category subclass
+	public static void loadSubclassFrequency() {
+		SUBCLASS_FREQUENCY.put("Other", NamedEntity.getTotalFrequency());
+		SUBCLASS_FREQUENCY.put("Lastname", Lastname.getTotalFrequency());
+		SUBCLASS_FREQUENCY.put("Name", Name.getTotalFrequency());
+		SUBCLASS_FREQUENCY.put("Title", Title.getTotalFrequency());
+		SUBCLASS_FREQUENCY.put("Place", Place.getTotalFrequency());
+		SUBCLASS_FREQUENCY.put("City", City.getTotalFrequency());
+		SUBCLASS_FREQUENCY.put("Country", Country.getTotalFrequency());
+		SUBCLASS_FREQUENCY.put("Address", Address.getTotalFrequency());
+		SUBCLASS_FREQUENCY.put("Organization", Organization.getTotalFrequency());
+		SUBCLASS_FREQUENCY.put("Product", Product.getTotalFrequency());
+		SUBCLASS_FREQUENCY.put("Event", Event.getTotalFrequency());
+		SUBCLASS_FREQUENCY.put("CDate", CDate.getTotalFrequency());
 	}
 
 	@Override
