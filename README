@@ -1,0 +1,90 @@
+## ¿Cómo se instala Spark en una computadora personal?
+- Requisitos previos:
+  - Asegúrate de tener instalado Java Development Kit (JDK) en tu computadora. Spark requiere Java 8 o superior.
+  - Se pueden tener vesiones más nuevas, pero hay que realizar [configuraciones adicionales](https://spark.apache.org/docs/3.4.0/).
+
+- Descargar Apache Spark:
+  - Accede al sitio web oficial de [Apache Spark](https://spark.apache.org/downloads.html).
+  - En la sección de descargas, elige la versión más reciente de Spark y selecciona el paquete precompilado para descargarlo.
+
+- Extraer el archivo:
+  - Una vez que se haya completado la descarga, descomprime el archivo.
+
+- Configuración de variables de entorno:
+  - Este paso es necesario si se planea poder acceder globalmente a Spark en el sistema operativo. Si no, se puede omitir. En este caso, importamos todos los JARs sin otras configuraciones.
+
+![ChatGPT](/docs/q0_0.png)
+
+## ¿Qué estructura tiene un programa en Spark?
+
+### Configuración:
+| Configuraciones específicas para el entorno de Spark. Esto incluye la configuración de parámetros como la cantidad de memoria asignada, el número de núcleos, etc.
+
+### Creación del contexto de Spark:
+El contexto de Spark es el punto de entrada principal para interactuar con Spark. Se crea una instancia de SparkContext, que es responsable de la conexión con el clúster de Spark. El contexto de Spark se utiliza para crear RDDs (Resilient Distributed Datasets) y realizar operaciones en paralelo.
+
+### Carga o creación de RDDs:
+Se cargan los datos en RDDs desde diferentes fuentes, como archivos locales, sistemas de archivos distribuidos (por ejemplo, HDFS), bases de datos, etc. También es posible crear RDDs a partir de datos en memoria.
+
+### Transformaciones:
+Las transformaciones son operaciones aplicadas a los RDDs para generar nuevos RDDs. Estas operaciones son perezosas (lazy) y no se ejecutan inmediatamente. Algunos ejemplos de transformaciones incluyen `map`, `filter`, `reduceByKey`, etc.
+
+### Acciones:
+Las acciones son operaciones que realizan cómputos o generan resultados finales a partir de los RDDs. Desencadenan la ejecución de las transformaciones anteriores y devuelven resultados al programa o los almacenan en sistemas externos. Ejemplos de acciones son `count`, `collect`, `saveAsTextFile`, etc.
+
+### Liberación de recursos:
+Al final del programa, se deben liberar los recursos de Spark adecuadamente. Esto implica cerrar el contexto de Spark y realizar cualquier limpieza necesaria.
+
+![ChatGPT](/docs/q1_0.png)
+
+## ¿Qué estructura tiene un programa de conteo de palabras en diferentes documentos en Spark?
+Sigue la misma estructura que un programa en Spark, pero con las transformaciones y acciones necesarias para realizar el conteo de palabras.
+
+> Este código de ejemplo es generado por ChatGPT.
+
+```python
+from pyspark import SparkContext
+
+# Configuración de Spark
+# ...
+
+# Crear el contexto de Spark
+sc = SparkContext()
+
+# Cargar los documentos
+documents = sc.textFile("ruta/del/directorio")
+
+# Transformaciones
+word_counts = documents.flatMap(lambda line: line.split(" ")) \
+                      .map(lambda word: (word, 1)) \
+                      .reduceByKey(lambda a, b: a + b)
+
+# Acciones
+results = word_counts.collect()
+for (word, count) in results:
+    print(f"{word}: {count}")
+
+# Liberar recursos
+sc.stop()
+```
+
+- La diferencia radica principalmente en la ***Carga de Documentos***, que se realiza con `sc.textFile("ruta/del/directorio")`, en nuestro caso va a ser por memoria, primero deberíamos cargar los documentos en una `List` y luego pasarlos a Spark con el método `parallelize`.
+
+- `flatMap` es una transformación que toma una función y aplica esa función a cada elemento del RDD y devuelve un nuevo RDD. La diferencia entre `map` y `flatMap` es que `map` devuelve un elemento por cada elemento de entrada, mientras que `flatMap` puede devolver cero o más elementos para cada elemento de entrada.
+
+
+## ¿Cómo adaptar el código del Laboratorio 2 a la estructura del programa objetivo en Spark?
+
+> Obviamos la parte de configuraciones que es un poco trivial y vamos a la carga de documentos que es el core del problema.
+
+- Creamos una lista que va a tener todos los artículos que queremos analizar.
+  - > Esto se puede mejorar, haciendolo por Feed, para paralelizar la descarga de documentos `*`.
+- Creamos un RDD a partir de la lista de documentos.
+- Aplicamos las transformaciones necesarias para obtener el resultado deseado (ya habíamos realizado esto en el Laboratorio 2 con `computeNamedEntities` y las instanciaciones de los derivados de `NamedEntity` y `Theme`).
+- Filtramos repetidos.
+
+## ¿Cómo se integra una estructura orientada a objetos con la estructura funcional de map-reduce?
+
+- En el caso de Spark, se puede utilizar la función `map` para aplicar una función a cada elemento de un RDD. Transformarlo en otro o ir obteniendo nuevos valores (`flatmap` y `*`).
+- 
+
