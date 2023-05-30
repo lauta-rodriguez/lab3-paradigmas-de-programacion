@@ -1,7 +1,12 @@
+import java.util.ArrayList;
 import java.util.List;
 
-import httpRequest.httpRequester;
+import org.apache.spark.SparkConf;
+import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.JavaSparkContext;
 
+import httpRequest.httpRequester;
+// import namedEntity.heuristic.StandfordHeuristic;
 import feed.Article;
 import feed.Feed;
 
@@ -9,10 +14,9 @@ import parser.GeneralParser;
 import parser.RedditParser;
 import parser.RssParser;
 import parser.SubscriptionParser;
-
 import subscription.SingleSubscription;
 import subscription.Subscription;
-
+import namedEntity.NamedEntity;
 import namedEntity.heuristic.Heuristic;
 import namedEntity.heuristic.QuickHeuristic;
 
@@ -30,109 +34,103 @@ public class FeedReaderMain {
 		}
 
 		System.out.println("************* FeedReader version 1.0 *************");
-		httpRequester requester = new httpRequester();
+		GeneralParser<List<Article>> feedParser = null;
+
+		SparkConf conf = new SparkConf().setAppName("FeedReader").setMaster("local");
+		JavaSparkContext sc = new JavaSparkContext(conf);
+		sc.setLogLevel("ERROR");
 
 		/* Leer el archivo de suscription por defecto */
 		Subscription subscription = new SubscriptionParser()
 				.parse("config/subscriptions.json");
 
-		/* Si se llama al programa sin argumentos, se genera el Feed */
-		if (args.length == 0) {
+		List<Feed> fullFeedList = new ArrayList<Feed>();
 
-			/* Llamar al httpRequester para obtener el feed del servidor */
-			for (int i = 0; i < subscription.getLength(); i++) {
-				SingleSubscription single = subscription.getSingleSubscription(i);
-				String type = single.getUrlType();
-				String rawUrl = single.getUrl();
-				GeneralParser<List<Article>> feedParser = null;
+		/* Llamar al httpRequester para obtener el feed del servidor */
+		for (int i = 0; i < subscription.getLength(); i++) {
+			SingleSubscription single = subscription.getSingleSubscription(i);
+			String type = single.getUrlType();
+			String rawUrl = single.getUrl();
 
-				/*
-				 * llamada al Parser especifico para extrar los datos necesarios por la
-				 * aplicacion
-				 */
-				if (type.equals("rss")) {
-					feedParser = new RssParser();
-				} else if (type.equals("reddit")) {
-					feedParser = new RedditParser();
-				} else {
-					System.out.println("Error: type of feed not supported");
-					continue;
-				}
-
-				for (int j = 0; j < single.getUlrParamsSize(); j++) {
-					String url = rawUrl.replace("%s", single.getUlrParams(j));
-					String data = requester.getFeed(url, type);
-
-					List<Article> articleList = feedParser.parse(data);
-
-					/* llamada al constructor de Feed */
-					Feed feed = new Feed(url);
-					feed.setArticleList(articleList);
-
-					/*
-					 * llamada al prettyPrint del Feed para ver los articulos del feed en forma
-					 * legible y amigable para el usuario
-					 */
-					feed.prettyPrint();
-				}
+			/*
+			 * llamada al Parser especifico para extrar los datos necesarios por la
+			 * aplicacion
+			 */
+			if (type.equals("rss")) {
+				feedParser = new RssParser();
+			} else if (type.equals("reddit")) {
+				feedParser = new RedditParser();
+			} else {
+				System.out.println("Error: type of feed not supported");
+				continue;
 			}
 
+			for (int j = 0; j < single.getUlrParamsSize(); j++) {
+				String url = rawUrl.replace("%s", single.getUlrParams(j));
+
+				/* llamada al constructor de Feed */
+				Feed feed = new Feed(url);
+				feed.setParser(feedParser);
+				fullFeedList.add(feed);
+			}
 		}
-		/*
-		 * Si se llama al programa con el argumento -ne
-		 * se genera el Feed y se computan las entidades nombradas
-		 */
-		else { // args.length == 1
-			/* Llamar al httpRequester para obtener el feed del servidor */
-			for (int i = 0; i < subscription.getLength(); i++) {
-				SingleSubscription single = subscription.getSingleSubscription(i);
-				String type = single.getUrlType();
-				String rawUrl = single.getUrl();
 
-				GeneralParser<List<Article>> feedParser = null;
-				Heuristic heuristic = new QuickHeuristic();
+		JavaRDD<Feed> parallell = sc.parallelize(fullFeedList, fullFeedList.size());
 
-				/*
-				 * llamada al Parser especifico para extrar los datos necesarios por la
-				 * aplicacion
-				 */
-				if (type.equals("rss")) {
-					feedParser = new RssParser();
-				} else if (type.equals("reddit")) {
-					feedParser = new RedditParser();
-				} else {
-					System.out.println("Error: type of feed not supported");
-					continue;
-				}
+		List<NamedEntity> collect = parallell
+				.flatMap((Feed feed) -> {
+					httpRequester requester = new httpRequester();
+					GeneralParser<List<Article>> parser = feed.getParser();
 
-				for (int j = 0; j < single.getUlrParamsSize(); j++) {
-					String url = rawUrl.replace("%s", single.getUlrParams(j));
-					String data = requester.getFeed(url, type);
-
-					List<Article> articleList = feedParser.parse(data);
-
-					/* llamada al constructor de Feed */
-					Feed feed = new Feed(url);
+					String data = requester.getFeed(feed.getSiteName(), parser.getParserType());
+					List<Article> articleList = parser.parse(data);
 					feed.setArticleList(articleList);
+					// feed.prettyPrint();
 
-					/*
-					 * Llamar a la heuristica para que compute las entidades nombradas de cada
-					 * articulos del feed
-					 */
-					for (int k = 0; k < articleList.size(); k++) {
-						try {
-							/* Imprime las entidades nombradas*/
-							System.out
-								.println("**********************************************************************************************");
-							System.out.println("Article: " + articleList.get(k).getTitle());
-							articleList.get(k).computeNamedEntities(heuristic);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-					continue;
+					return articleList.iterator();
+				})
+				.flatMap((Article article) -> {
+					Heuristic heuristic = new QuickHeuristic();
+					article.computeNamedEntities(heuristic);
+					return article.getNamedEntities().iterator();
+				})
+				.filter((NamedEntity namedEntity) -> !namedEntity.getCategory().equals("Other"))
+				// .flatMap((String text) -> {
+				// StandfordHeuristic sh = new StandfordHeuristic();
+				// return sh.getEntities(text).iterator();
+				// })
+				// .filter((String text) -> !text.equals("O"));
+				.collect();
+
+
+		sc.close();
+		sc.stop();
+
+		List<NamedEntity> reducedList = new ArrayList<NamedEntity>();
+
+		for (NamedEntity ne : collect) {
+			NamedEntity reduced = null;
+			for (NamedEntity ne2 : reducedList) {
+				if (ne.getName().equals(ne2.getName())) {
+					reduced = ne2;
+					break;
 				}
 			}
+
+			if (reduced == null) {
+				reducedList.add(ne);
+				continue;
+			}
+
+			// CROTO - VILLERO - HORRIBLE
+			for (int i = 0; i < ne.getNEFrequency(); i++) {
+				reduced.incrementNEFrequency();
+			}
+		}
+
+		System.out.println("\n************* Named Entities *************\n");
+		for (NamedEntity ne : reducedList) {
+			ne.prettyPrint();
 		}
 	}
 
