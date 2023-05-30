@@ -52,7 +52,7 @@ public class Event extends namedEntity.NamedEntity {
   }
 
 	public String StringifyObject() {
-		return ("[" + this.getName() + ": (" + this.getCategory() + ", " + getFrequency() + ") ");
+		return ("[(" + getName() + ", " + getNEFrequency() + "): (" + getCategory() + ", " + getFrequency() + ") ");
 	}
 
 }

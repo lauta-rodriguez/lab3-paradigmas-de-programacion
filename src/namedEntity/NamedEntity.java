@@ -79,7 +79,7 @@ public class NamedEntity implements Serializable {
 	}
 
 	public String StringifyObject() {
-		return ("[" + this.getName() + ": (" + this.getCategory() + ", " + getFrequency() + ") ");
+		return ("[(" + getName() + ", " + getNEFrequency() + "): (" + getCategory() + ", " + getFrequency() + ") ");
 	}
 
 	public void prettyPrint() {

@@ -50,6 +50,6 @@ public class Name extends Person {
   }
 
   public String StringifyObject() {
-		return ("[" + this.getName() + ": (" + this.getCategory() + ", " + getFrequency() + ") ");
+		return ("[(" + getName() + ", " + getNEFrequency() + "): (" + getCategory() + ", " + getFrequency() + ") ");
 	}
 }
