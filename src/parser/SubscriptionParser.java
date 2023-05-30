@@ -18,6 +18,11 @@ import subscription.Subscription;
 
 public class SubscriptionParser extends GeneralParser<Subscription> {
 
+    @Override
+    public String getParserType() {
+        return "subscription";
+    }
+
     /*
      * Este metodo parsea un objeto json y devuelve un objeto SingleSubscription
      */

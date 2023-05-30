@@ -15,6 +15,11 @@ public class RedditParser extends GeneralParser<List<Article>> {
 
     private static final int MAX_CHARS = 80;
 
+    @Override
+    public String getParserType() {
+        return "reddit";
+    }
+
     /*
      * Este metodo genera articulos dado un post
      * Extrae los atributos: titulo, descripcion, fecha y link

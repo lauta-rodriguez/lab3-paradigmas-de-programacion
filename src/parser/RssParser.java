@@ -23,6 +23,11 @@ import feed.Article;
  * */
 public class RssParser extends GeneralParser<List<Article>> {
 
+  @Override
+  public String getParserType() {
+      return "rss";
+  }
+
   /* Parsea la fecha en el formato específico de los feeds RSS */
   private static Date parseDate(String pubDate) {
     try {
