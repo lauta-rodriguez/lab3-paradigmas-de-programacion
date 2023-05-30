@@ -1,5 +1,6 @@
 package feed;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,7 +36,7 @@ import topic.Sports.Tennis;
 
 /*Esta clase modela el contenido de un articulo (ie, un item en el caso del rss feed) */
 
-public class Article {
+public class Article implements Serializable {
 	private String title;
 	private String text;
 	private Date publicationDate;
@@ -130,6 +131,10 @@ public class Article {
 		return null;
 	}
 
+	public List<NamedEntity> getNamedEntities() {
+		return namedEntityList;
+	}
+
 	private NamedEntity generateNamedEntity(String namedEntity, String category)
 			throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
 			NoSuchMethodException, SecurityException, ClassNotFoundException {
@@ -162,7 +167,7 @@ public class Article {
 		}
 
 		for (String s : text.split(" ")) {
-			if (h.isEntity(s)) {
+			if (h.isEntity(s) && !h.getCategory(s).equals("Other")) {
 				// ver si la entidad nombrada ya se encuentra en las entidades
 				// de este articulo
 				NamedEntity ne = this.getNamedEntity(s);
@@ -178,10 +183,7 @@ public class Article {
 
 				} else { // si esta, incrementa su contador de ocurrencias
 					ne.incrementFrequency();
-					ne.getTopic().incrementFrequency();
 				}
-
-				ne.prettyPrint();
 			}
 		}
 	}

@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import parser.GeneralParser;
+
 /*Esta clase modela la lista de articulos de un determinado feed*/
-public class Feed {
+public class Feed implements java.io.Serializable {
 	String siteName;
 	List<Article> articleList;
+	private GeneralParser<List<Article>> parser;
 	
 	public Feed(String siteName) {
 		super();
@@ -21,6 +24,14 @@ public class Feed {
 	
 	public void setSiteName(String siteName){
 		this.siteName = siteName;
+	}
+
+	public GeneralParser<List<Article>> getParser() {
+		return this.parser;
+	}
+
+	public void setParser(GeneralParser<List<Article>> parser) {
+		this.parser = parser;
 	}
 	
 	public List<Article> getArticleList(){

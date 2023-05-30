@@ -1,15 +1,18 @@
 package namedEntity;
 
+import java.io.Serializable;
+
 import topic.Topic;
 
 /*Esta clase modela la nocion de entidad nombrada*/
 
-public class NamedEntity {
+public class NamedEntity implements Serializable {
 	String name;
 	private String category = "Other";
 	private String parentCategory = "Named Entity";
 
 	private static int frequency = 0;
+	private int neFrequency = 0;
 
 	Topic topic;
 
@@ -17,6 +20,7 @@ public class NamedEntity {
 		super();
 		this.name = name;
 		frequency++;
+		incrementNEFrequency();
 	}
 
 	public String getName() {
@@ -39,8 +43,18 @@ public class NamedEntity {
 		return frequency;
 	}
 
+	public int getNEFrequency() {
+		return neFrequency;
+	}
+
 	public void incrementFrequency() {
 		frequency++;
+		incrementNEFrequency();
+		getTopic().incrementFrequency();
+	}
+
+	public void incrementNEFrequency() {
+		neFrequency++;
 	}
 
 	public Topic getTopic() {
