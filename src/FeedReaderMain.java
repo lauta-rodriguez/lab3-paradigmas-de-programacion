@@ -102,6 +102,41 @@ public class FeedReaderMain {
         topicsAndFrequencies.put("Other [Topic]", Topic.getFrequency());
     }
 
+    // imprime las categorias y topics y sus frecuencias
+    private static void printCTFrequencies() {
+        // Obtener las categorias y frecuencias
+        getCategoriesAndFrequencies();
+        // Obtener los topics y frecuencias
+        getTopicsAndFrequencies();
+
+        // Ordenar las categorias y frecuencias por frecuencia, en orden descendente
+        Map<String, Integer> sortedCategoriesbyFrequency = categoriesAndFrequencies.entrySet().stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1,
+                        java.util.LinkedHashMap::new));
+
+        // Ordenar los topics y frecuencias por frecuencia, en orden descendente
+        Map<String, Integer> sortedTopicsbyFrequency = topicsAndFrequencies.entrySet().stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1,
+                        java.util.LinkedHashMap::new));
+
+        // Impresion de las categorias y topics y sus frecuencias (!= 0)
+        System.out.println("\nCategories and their frequencies: ");
+        for (Map.Entry<String, Integer> entry : sortedCategoriesbyFrequency.entrySet()) {
+            if (entry.getValue() != 0) {
+                System.out.println(entry.getKey() + " - " + entry.getValue());
+            }
+        }
+
+        System.out.println("\nTopics and their frequencies: ");
+        for (Map.Entry<String, Integer> entry : sortedTopicsbyFrequency.entrySet()) {
+            if (entry.getValue() != 0) {
+                System.out.println(entry.getKey() + " - " + entry.getValue());
+            }
+        }
+    }
+
     private static void printHelp() {
         System.out.println("Please, call this program in correct way: FeedReader [-ne]");
     }
@@ -272,41 +307,8 @@ public class FeedReaderMain {
             // se cierra el contexto
             jsc.close();
 
-            // Get the categories and frequencies
-            getCategoriesAndFrequencies();
-            // Get the topics and frequencies
-            getTopicsAndFrequencies();
-
-            // Sort the categories and frequencies by frequency, in descending order
-            // (highest to lowest)
-            Map<String, Integer> sortedCategoriesbyFrequency = categoriesAndFrequencies.entrySet().stream()
-                    .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1,
-                            java.util.LinkedHashMap::new));
-
-            // Sort the topics and frequencies by frequency, in descending order (highest to
-            // lowest)
-            Map<String, Integer> sortedTopicsbyFrequency = topicsAndFrequencies.entrySet().stream()
-                    .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1,
-                            java.util.LinkedHashMap::new));
-
-            // Print the categories and frequencies (!= 0)
-            System.out.println("\nCategories and their frequencies: ");
-            for (Map.Entry<String, Integer> entry : sortedCategoriesbyFrequency.entrySet()) {
-                if (entry.getValue() != 0) {
-                    System.out.println(entry.getKey() + " - " + entry.getValue());
-                }
-            }
-
-            // Print the topics and frequencies (!= 0)
-            System.out.println("\nTopics and their frequencies: ");
-            for (Map.Entry<String, Integer> entry : sortedTopicsbyFrequency.entrySet()) {
-                if (entry.getValue() != 0) {
-                    System.out.println(entry.getKey() + " - " + entry.getValue());
-                }
-            }
-
+            // se imprime las Categorias y Topics y sus Frecuencias
+            printCTFrequencies();
         }
 
     }
