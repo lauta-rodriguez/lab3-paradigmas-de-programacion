@@ -1,8 +1,11 @@
 package namedEntity;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import namedEntity.classes.CDate.CDate;
 import namedEntity.classes.Event.Event;
@@ -138,10 +141,19 @@ public class NamedEntity {
 		SUBCLASS_FREQUENCY.put("CDate", CDate.getTotalFrequency());
 	}
 
-	public static void printSubclassFrequency() {
-		for (Map.Entry<String, Integer> entry : SUBCLASS_FREQUENCY.entrySet()) {
-			System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());
+	public static void prettyPrintFrequencies() {
+		Map<String, Integer> sortedSubclassFrequency = SUBCLASS_FREQUENCY.entrySet()
+				.stream()
+				.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue,
+						LinkedHashMap::new));
+
+		System.out.println("Total occurrences by category");
+		for (Map.Entry<String, Integer> entry : sortedSubclassFrequency.entrySet()) {
+			System.out.println("\t" + entry.getKey() + ": " + entry.getValue());
 		}
+		System.out.println("\n");
+
 	}
 
 	public void prettyPrint() {

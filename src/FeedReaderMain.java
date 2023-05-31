@@ -144,6 +144,9 @@ public class FeedReaderMain {
 
 			System.out.println("\nFound " + NamedEntity.getTotalNamedEntities() + " occurrences of named entities\n");
 
+			NamedEntity.prettyPrintFrequencies();
+			Topic.prettyPrintFrequencies();
+
 			// print info about all named entities
 			for (NamedEntity ne : namedEntities) {
 				ne.prettyPrint();

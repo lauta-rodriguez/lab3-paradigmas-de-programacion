@@ -1,8 +1,11 @@
 package topic;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import namedEntity.heuristic.Heuristic;
 import topic.Culture.*;
@@ -111,6 +114,20 @@ public class Topic {
     SUBCLASS_FREQUENCY.put("Basket", Basket.getTotalFrequency());
     SUBCLASS_FREQUENCY.put("Tennis", Tennis.getTotalFrequency());
     SUBCLASS_FREQUENCY.put("F1", F1.getTotalFrequency());
+  }
+
+  public static void prettyPrintFrequencies() {
+    Map<String, Integer> sortedSubclassFrequency = SUBCLASS_FREQUENCY.entrySet()
+        .stream()
+        .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue,
+            LinkedHashMap::new));
+
+    System.out.println("Total occurrences by topic");
+    for (Map.Entry<String, Integer> entry : sortedSubclassFrequency.entrySet()) {
+      System.out.println("\t" + entry.getKey() + ": " + entry.getValue());
+    }
+    System.out.println("\n");
   }
 
   public String StringifyObject() {
