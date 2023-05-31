@@ -1,4 +1,7 @@
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.apache.spark.SparkConf;
@@ -16,6 +19,8 @@ import parser.RssParser;
 import parser.SubscriptionParser;
 import subscription.SingleSubscription;
 import subscription.Subscription;
+import namedEntity.Counter;
+import namedEntity.Generator;
 import namedEntity.NamedEntity;
 import namedEntity.heuristic.Heuristic;
 import namedEntity.heuristic.QuickHeuristic;
@@ -85,7 +90,7 @@ public class FeedReaderMain {
 					String data = requester.getFeed(feed.getSiteName(), parser.getParserType());
 					List<Article> articleList = parser.parse(data);
 					feed.setArticleList(articleList);
-					// feed.prettyPrint();
+					feed.prettyPrint();
 
 					return articleList.iterator();
 				})
@@ -102,26 +107,42 @@ public class FeedReaderMain {
 				// .filter((String text) -> !text.equals("O"));
 				.collect();
 
-
 		sc.close();
 		sc.stop();
 
-		List<NamedEntity> reducedList = new ArrayList<NamedEntity>();
+		Dictionary<String, NamedEntity> singleEntities = new Hashtable<>();
+		Dictionary<String, Dictionary<String, List<NamedEntity>>> compoundEntities = new Hashtable<>();
 
 		for (NamedEntity ne : collect) {
-			NamedEntity reduced = null;
-			for (NamedEntity ne2 : reducedList) {
-				if (ne.getName().equals(ne2.getName())) {
-					reduced = ne2;
-					break;
-				}
-			}
+			String key = ne.getCategory() + " - " + ne.getTopic().getCategory();
+			NamedEntity reduced = singleEntities.get(ne.getName());
 
 			if (reduced == null) {
-				reducedList.add(ne);
+				singleEntities.put(ne.getName(), ne);
+				Counter.increment(key, ne.getNEFrequency());
+				Dictionary<String, List<NamedEntity>> sEntities = compoundEntities.get(ne.getCategory());
+				
+				if (sEntities == null) {
+					Dictionary<String, List<NamedEntity>> newDict = new Hashtable<>();
+					List<NamedEntity> newList = new ArrayList<>();
+					newList.add(ne);
+					newDict.put(ne.getTopic().getCategory(), newList);
+					compoundEntities.put(ne.getCategory(), newDict);
+				} else {
+					List<NamedEntity> newList = sEntities.get(ne.getTopic().getCategory());
+
+					if (newList == null) {
+						newList = new ArrayList<>();
+						sEntities.put(ne.getTopic().getCategory(), newList);
+					}
+
+					newList.add(ne);
+				}
+
 				continue;
 			}
 
+			Counter.increment(key, ne.getNEFrequency());
 			// CROTO - VILLERO - HORRIBLE
 			for (int i = 0; i < ne.getNEFrequency(); i++) {
 				reduced.incrementNEFrequency();
@@ -129,8 +150,32 @@ public class FeedReaderMain {
 		}
 
 		System.out.println("\n************* Named Entities *************\n");
-		for (NamedEntity ne : reducedList) {
-			ne.prettyPrint();
+
+		System.out.println("Named Entity: " + NamedEntity.getFrequency());
+
+		Enumeration<String> k = compoundEntities.keys();
+		while (k.hasMoreElements()) {
+			String key = k.nextElement();
+			Dictionary<String, List<NamedEntity>> nestedDict = compoundEntities.get(key);
+
+			Enumeration<String> k2 = nestedDict.keys();
+			while (k2.hasMoreElements()) {
+				String key2 = k2.nextElement();
+				List<NamedEntity> list = nestedDict.get(key2);
+
+				int count = 0;
+				try {
+					count = Integer.parseInt(Generator.getNamedEntity(key).getDeclaredMethod("getFrequency").invoke(null).toString());
+				} catch (Exception e) {
+				}
+	
+				System.out.println("\t" + key + ": " + count);
+				System.out.println("\t\t" + key2 + ": " + Counter.get(key + " - " + key2));
+
+				list.forEach((NamedEntity ne) -> {
+					System.out.println("\t\t\t" + ne.getName() + ": " + ne.getNEFrequency());
+				});
+			}
 		}
 	}
 
