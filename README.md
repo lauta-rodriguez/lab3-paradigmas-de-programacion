@@ -242,7 +242,7 @@ Con respecto a la utilización de Copilot, una IA que pertenece a GitHub y que t
 
 El caso de uso más complejo que tuve con Copilot fue el de presentar de manera ordenada las frecuencias de las categorías y topicos de las entidades nombradas. Para ello, escribo comentarios detallados en el código para que Copilot pueda comprender el objetivo de la función como se puede ver en el siguiente snippet:
 
-(![copilot-usage](/imagenes/copilot.png))
+![copilot-usage](/imagenes/copilot.png)
 
 # ¿Cómo se integra una estructura orientada a objetos con la estructura funcional de map-reduce?
 
