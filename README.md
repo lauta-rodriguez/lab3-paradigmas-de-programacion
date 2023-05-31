@@ -171,4 +171,65 @@ utilizando el modelo map-reduce en Spark:
 
 # ¿Cómo adaptar el código del Laboratorio 2 a la estructura del programa objetivo en Spark?
 
+Adaptar el código del Laboratorio 2 a la estructura del programa objetivo en Spark implica:
+
+- Hacer serializables las clases que usan los objetos de spark:
+
+  - Article
+  - NamedEntity
+
+    ¿Por qué? ¿Qué significa que una clase sea serializable?
+
+    Una clase es serializable si implementa la interfaz `java.io.Serializable`. Esto significa que los objetos de esa clase pueden ser convertidos en una secuencia de bytes, que luego pueden ser guardados en un archivo, enviados a través de una red, etc. y luego reconstruidos en un objeto idéntico al original.
+
+    En el contexto de Spark, esto es necesario porque los objetos de las clases `Article` y `NamedEntity` se envían a través de la red a los nodos del cluster para ser procesados. Por lo tanto, deben ser serializables para que puedan ser enviados a través de la red.
+
+- Establecer **qué** se va a paralelizar con Spark:
+
+  - El procesamiento de los artículos
+  - La computación de las entidades nombradas
+  - El conteo de las entidades nombradas
+
+- Decidir **cómo** se va a distribuir el procesamiento de los artículos:
+
+  - Para distribuir el procesamiento de los artículos en Spark podemos seguir el modelo map-reduce presentado en el programa de conteo de palabras con ciertas modificaciones:
+
+    1. Se crea una instancia de la clase `QuickHeuristic`, que representa una heurística para el procesamiento de entidades nombradas.
+
+    2. Se crea el contexto de `Spark` utilizando la configuración `SparkConf`. En este caso, se establece el nombre de la aplicación como "NER" y se utiliza el modo de ejecución local con setMaster("local[*]").
+
+    3. Se paraleliza el procesamiento de los artículos mediante la función parallelize de JavaSparkContext. Los artículos se cargan en un JavaRDD<Article> articleRDD, que es un Resilient Distributed Dataset (RDD) de objetos de la clase Article.
+
+    4. Comienza la sección donde se aplica el modelo **map-reduce** en el RDD articleRDD.
+
+       a. `Map`: Se aplica la función map al RDD articleRDD. En cada artículo, se computan las entidades nombradas utilizando la heurística definida. Luego, se devuelve la lista de entidades nombradas del artículo.
+
+       b. `FlatMap`: Se aplica la función flatMap al RDD namedEntityRDD. Esto transforma el RDD de listas de entidades nombradas en un RDD de entidades nombradas individuales. Las entidades nombradas pueden repetirse en este RDD resultante.
+
+       c. `MapToPair`: Se aplica la función mapToPair al RDD flatNamedEntityRDD. Cada entidad nombrada se mapea a una tupla en formato clave-valor, donde la clave es el nombre de la entidad y el valor es 1. Esto se hace para preparar el RDD para el paso de reducción posterior.
+
+       d. `ReduceByKey`: Se aplica la función reduceByKey al RDD namedEntityPairRDD. Se realiza una reducción por clave, es decir, se suman los valores asociados a cada clave (nombre de la entidad nombrada). Esto resulta en un RDD que contiene la frecuencia global de cada entidad nombrada.
+
+    5. Se finaliza la sección de paralelización.
+
+       a. `Collect`: Se utiliza la función collect en el RDD namedEntityFrequencyRDD para recolectar los resultados en el programa principal. Los resultados se almacenan en una lista de tuplas clave-valor, donde la clave es el nombre de la entidad nombrada y el valor es su frecuencia.
+
+    6. Se imprime en la consola las entidades nombradas y sus frecuencias utilizando un bucle for sobre la lista namedEntityFrequencyList.
+
+    7. Se cierra el contexto de Spark utilizando jsc.close().
+
+# Integración de Inteligencias Artificiales a la producción y documentación de software
+
 # ¿Cómo se integra una estructura orientada a objetos con la estructura funcional de map-reduce?
+
+En la programación funcional, las funciones son puras, los datos son inmutables y se controlan los efectos secundarios. Además, se utiliza la composición de funciones y la recursividad para expresar algoritmos de manera concisa. Por lo tanto, es un paradigma muy adecuado para el procesamiento de datos de manera concurrente.
+
+En la programación orientada a objetos, los datos y el comportamiento se encapsulan en objetos. Los objetos se comunican entre sí mediante el envío de mensajes, lo que permite la reutilización de código y la abstracción de los detalles de implementación. Estas características son muy útiles para el desarrollo de aplicaciones complejas.
+
+Una forma de integrar los dos paradigmas es utilizando una biblioteca que proporcione un puente entre la programación funcional y la programación orientada a objetos. Una de esas bibliotecas es Spark, que se basa en el modelo de programación MapReduce para procesar grandes volúmenes de datos distribuidos.
+
+Este modelo divide los datos en fragmentos más pequeños y los procesa en paralelo en varios nodos de un clúster. MapReduce se combina con los conceptos de la programación orientada a objetos y funcional en Spark, ya que las operaciones de map y reduce son fundamentales en el procesamiento de los RDD (Resilient Distributed Datasets).
+
+En un programa en Spark, la **programación orientada a objetos** se utiliza para definir las **estructuras de datos y los objetos** y los objetos, mientras que la **programación funcional** se utiliza para**describir las transformaciones y las operaciones** que se aplican a los datos distribuidos.
+
+Al combinar los dos paradigmas, se pueden aprovechar las ventajas de ambos. Mediante la programación funcional expresar algoritmos de manera concisa y procesar datos de manera eficiente, y mediante la programación orientada a objetos reutilizar código y abstraer los detalles de implementación.
