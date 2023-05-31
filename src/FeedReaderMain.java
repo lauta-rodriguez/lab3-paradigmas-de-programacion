@@ -158,18 +158,19 @@ public class FeedReaderMain {
 			String key = k.nextElement();
 			Dictionary<String, List<NamedEntity>> nestedDict = compoundEntities.get(key);
 
+			int count = 0;
+			try {
+				count = Integer.parseInt(Generator.getNamedEntity(key).getDeclaredMethod("getFrequency").invoke(null).toString());
+			} catch (Exception e) {
+			}
+
+			System.out.println("\t" + key + ": " + count);
+
 			Enumeration<String> k2 = nestedDict.keys();
 			while (k2.hasMoreElements()) {
 				String key2 = k2.nextElement();
 				List<NamedEntity> list = nestedDict.get(key2);
 
-				int count = 0;
-				try {
-					count = Integer.parseInt(Generator.getNamedEntity(key).getDeclaredMethod("getFrequency").invoke(null).toString());
-				} catch (Exception e) {
-				}
-	
-				System.out.println("\t" + key + ": " + count);
 				System.out.println("\t\t" + key2 + ": " + Counter.get(key + " - " + key2));
 
 				list.forEach((NamedEntity ne) -> {
