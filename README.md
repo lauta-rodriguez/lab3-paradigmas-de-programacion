@@ -220,6 +220,30 @@ Adaptar el código del Laboratorio 2 a la estructura del programa objetivo en Sp
 
 # Integración de Inteligencias Artificiales a la producción y documentación de software
 
+Para este proyecto, utilicé principalmente ChatGPT, una IA basada en el modelo GPT-3.5, para recibir asistencia en la generación de este README y comprender la consigna. Trabajar con ChatGPT fue un proceso iterativo en el que tuve que probar diferentes configuraciones y alimentar a la IA con módulos completos del Laboratorio 2 para que pudiera comprender mejor la consigna. A continuación, se muestra un ejemplo de una interacción con ChatGPT:
+
+![chatgpt-1](/imagenes/chatgpt-1.png)
+
+![chatgpt-2](/imagenes/chatgpt-2.png)
+![chatgpt-3](/imagenes/chatgpt-3.png)
+![chatgpt-4](/imagenes/chatgpt-4.png)
+
+Sin embargo, también es importante tener en cuenta que la IA no reemplaza la comprensión humana. Aunque ChatGPT proporcionó información útil, fue necesario revisar y ajustar el contenido generado para garantizar su precisión y coherencia.
+
+En cierto punto, ChatGPT dejó de ser útil debido a la complejidad de la consigna, pero me marcó el camino a seguir. Para continuar con el proyecto, utilicé Bard, una IA que pertenece a Google y que, hasta la fecha, solo tiene soporte en inglés. Al tener acceso a internet, Bard fue capaz de generar **código** más útil que ChatGPT, proporcionándome enlaces a los repositorios de GitHub de los proyectos que utilizó para generar el código. A continuación, se muestra un ejemplo de una interacción con Bard:
+
+![bard-1](/imagenes/bard-1.png)
+![bard-2](/imagenes/bard-2.png)
+![bard-3](/imagenes/bard-3.png)
+
+Las ventajas de utilizar más de una IA son poder alimentar a una con la salida de la otra y poder salir de un estado "bloqueado" que eventualmente se alcanza al trabajar con una sola IA. Sin embargo, las desventajas son que Bard no guarda los chats para revisarlos en el futuro, por lo que es necesario guardarlos manualmente, y que no tiene soporte en español. Además, el modelo gratuito ofrecido por ChatGPT es bastante limitado y no siempre agiliza el proceso de producción de software.
+
+Con respecto a la utilización de Copilot, una IA que pertenece a GitHub y que tiene soporte en español, cuyo fin es generar código, hago uso de la misma para cuestiones que no requieren elaborar un prompt muy complejo. Por ejemplo, la utilizo para traducir pseudocódigo a código en Java, o para resolver implementaciones de algoritmos que no requieren de una estructura de datos compleja.
+
+El caso de uso más complejo que tuve con Copilot fue el de presentar de manera ordenada las frecuencias de las categorías y topicos de las entidades nombradas. Para ello, escribo comentarios detallados en el código para que Copilot pueda comprender el objetivo de la función como se puede ver en el siguiente snippet:
+
+(![copilot-usage](/imagenes/copilot.png))
+
 # ¿Cómo se integra una estructura orientada a objetos con la estructura funcional de map-reduce?
 
 En la programación funcional, las funciones son puras, los datos son inmutables y se controlan los efectos secundarios. Además, se utiliza la composición de funciones y la recursividad para expresar algoritmos de manera concisa. Por lo tanto, es un paradigma muy adecuado para el procesamiento de datos de manera concurrente.
@@ -230,6 +254,6 @@ Una forma de integrar los dos paradigmas es utilizando una biblioteca que propor
 
 Este modelo divide los datos en fragmentos más pequeños y los procesa en paralelo en varios nodos de un clúster. MapReduce se combina con los conceptos de la programación orientada a objetos y funcional en Spark, ya que las operaciones de map y reduce son fundamentales en el procesamiento de los RDD (Resilient Distributed Datasets).
 
-En un programa en Spark, la **programación orientada a objetos** se utiliza para definir las **estructuras de datos y los objetos** y los objetos, mientras que la **programación funcional** se utiliza para**describir las transformaciones y las operaciones** que se aplican a los datos distribuidos.
+En un programa en Spark, la **programación orientada a objetos** se utiliza para definir las **estructuras de datos y los objetos** y los objetos, mientras que la **programación funcional** se utiliza para **describir las transformaciones y las operaciones** que se aplican a los datos distribuidos.
 
 Al combinar los dos paradigmas, se pueden aprovechar las ventajas de ambos. Mediante la programación funcional expresar algoritmos de manera concisa y procesar datos de manera eficiente, y mediante la programación orientada a objetos reutilizar código y abstraer los detalles de implementación.
