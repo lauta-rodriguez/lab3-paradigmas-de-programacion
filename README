@@ -102,6 +102,8 @@ sc.stop()
 - [Medium](https://medium.datadriveninvestor.com/the-most-wanted-commands-in-pyspark-demo-in-databricks-b3eafb44a2fd)
   - A priori no tiene mucho que ver, pero pude implementarlo en Java (con Spark) con el [DataBrick de Standford](https://stanfordnlp.github.io/CoreNLP/ner.html) siguiendo ese blog. El mismo detectaba en un tiempo razonable y de manera precisa practicamente todas las Named Entities de los documentos.
     - La parte de Spark es un poco "vende humo" ya que lo volvía más lento, el DataBrick ya está paralelizado por lo que era un overload inncesesario y mal implementado en Java, pero la idea es la misma y es óptima en Scala ya que tanto Spark como el DataBrick tienen soporte en Scala.
+      - [Heuristic](src/namedEntity/heuristic/StandfordHeuristic.java)
+      - [Logic](src/namedEntity/heuristic/Stanford/Pipeline.java)
 
 ## java+spark: org.apache.spark.SparkException: Job aborted: Task not serializable: java.io.NotSerializableException
 
