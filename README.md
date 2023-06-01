@@ -1,57 +1,8 @@
 # Reconocimiento de entidades nombradas usando Spark
 
-## Alumna:
+## Autora:
 
 - Kurtz Lara, lara.kurtz@mi.unc.edu.ar
-
-# Cómo correr el programa
-
-Ejemplo de ejecución:
-
-```java
-************* FeedReader version 1.0 *************
-
-Found 1299 occurrences of named entities
-
-Total occurrences by category
-	Other: 1116
-	Organization: 57
-	Place: 45
-	Name: 30
-	Lastname: 24
-	Title: 10
-	Country: 8
-	City: 5
-	CDate: 3
-	Event: 1
-	Address: 0
-	Product: 0
-
-Total occurrences by topic
-	Other: 767
-	Politics: 103
-	National: 63
-	International: 40
-	Sports: 30
-	Tennis: 4
-	Futbol: 0
-	Music: 0
-	Basket: 0
-	F1: 0
-	Cine: 0
-
-"OpenAI" occurs in:
-	Category "Organization": 3 of 57 times
-	Topic    "International": 3 of 40 times
-
-"NBA" occurs in:
-	Category "Other": 4 of 1116 times
-	Topic    "Sports": 4 of 30 times
-
-"President" occurs in:
-	Category "Title": 2 of 10 times
-	Topic    "National": 2 of 63 times
-```
 
 # Instalación de Spark en una computadora personal
 
@@ -61,7 +12,7 @@ Asumiendo que JDK ya está instalado, seguir los siguientes pasos:
 
 1. Descargar las librerías de Spark desde el sitio de [Apache Spark](<[https://spark.apache.org/downloads.html](https://spark.apache.org/downloads.html)>).
 2. Descomprimir el directorio obtenido: `spark-3.4.0-bin-hadoop3` .
-3. Extraer los archivos `.jar` del directorio `spark-3.4.0-bin-hadoop3/jars` y colocarlos en el directorio `lib/spark` del projecto.
+3. Extraer los archivos `.jar` del directorio `spark-3.4.0-bin-hadoop3/jars` y colocarlos en el directorio `lib/spark` del proyecto.
 4. Configurar el `build path` de la IDE para incluir los `.jar` en las dependencias del programa. Para lograr esto en Visual Studio Code incorporar la siguiente línea al archivo `setting.json`:
 
    ```json
@@ -134,7 +85,7 @@ Podemos identificar las siguientes partes:
 
 2. **Carga de datos** en RDDs para su procesamiento. Esto permite que los datos sean distribuidos y procesados en paralelo.
 
-   En este caso, se cargan todos los archivos de texto específicados en un RDD llamado `lines`.
+   En este caso, se cargan todos los archivos de texto especificados en un RDD llamado `lines`.
 
    ```java
     // Load the input text file
@@ -231,7 +182,54 @@ Se utiliza la acción `collect()` para recolectar los resultados parciales de la
 
 Se utiliza esta acción para obtener una lista de tuplas, de la cual se extraen los parámetros necesarios y se llama al constructor de las clases mediante el método `generateNamedEntity()` de la clase NamedEntity.
 
-## Cómo se integra una estructura orientada a objetos con la estructura funcional de map-reduce
+## Ejemplo de ejecución
+
+```java
+************* FeedReader version 1.0 *************
+
+Found 1299 occurrences of named entities
+
+Total occurrences by category
+	Other: 1116
+	Organization: 57
+	Place: 45
+	Name: 30
+	Lastname: 24
+	Title: 10
+	Country: 8
+	City: 5
+	CDate: 3
+	Event: 1
+	Address: 0
+	Product: 0
+
+Total occurrences by topic
+	Other: 767
+	Politics: 103
+	National: 63
+	International: 40
+	Sports: 30
+	Tennis: 4
+	Futbol: 0
+	Music: 0
+	Basket: 0
+	F1: 0
+	Cine: 0
+
+"OpenAI" occurs in:
+	Category "Organization": 3 of 57 times
+	Topic    "International": 3 of 40 times
+
+"NBA" occurs in:
+	Category "Other": 4 of 1116 times
+	Topic    "Sports": 4 of 30 times
+
+"President" occurs in:
+	Category "Title": 2 of 10 times
+	Topic    "National": 2 of 63 times
+```
+
+# Cómo se integra una estructura orientada a objetos con la estructura funcional de map-reduce
 
 La integración de una estructura orientada a objetos con la estructura funcional de map-reduce se logra utilizando librerías que permiten combinar ambas metodologías. En este caso, empleamos la librería _Spark_ en el lenguaje orientado a objetos _Java_.
 
@@ -240,3 +238,47 @@ La integración de una estructura orientada a objetos con la estructura funciona
 Por otro lado, **la programación funcional se utiliza para realizar operaciones de transformación y análisis de datos de manera declarativa y sin efectos secundarios**. En lugar de modificar los datos existentes, se aplican funciones puras que toman un conjunto de datos y devuelven un nuevo resultado. El paradigma funcional se basa en la composición de funciones y en la inmutabilidad de los datos. En Spark, esto se traduce en aplicar transformaciones sobre RDDs, donde cada transformación genera un nuevo RDD con las modificaciones especificadas.
 
 Esta combinación nos permite aprovechar lo mejor de ambos enfoques: la claridad y el modelado de la programación orientada a objetos, junto con la capacidad de procesamiento distribuido y paralelismo ofrecidos por la estructura funcional de map-reduce.
+
+# **Utilización de inteligencias artificiales en el proceso de desarrollo**
+
+He utilizado varias inteligencias artificiales (IA) en el proceso de desarrollo, algunas de propósito general, como _Bard_ y _ChatGPT-3_, así como especializadas en desarrollo de código, como _Copilot_. Estas tres IAs resultan ser muy útiles, aunque algunas son más adecuadas para ciertos tipos de consultas que otras.
+
+Sin embargo, es importante tener en cuenta que no se puede depender totalmente de las IAs, ya que tienden a generar contenido incorrecto y/o ambiguo. Por lo tanto, es necesario verificar lo que devuelven.
+
+He incorporado el uso de inteligencias artificiales en casi todo mi proceso de desarrollo, pero particularmente en las siguientes áreas:
+
+## Generación y comprensión de código
+
+Para este caso usé las tres IAs, aunque con leves diferencias en los casos de uso para cad una.
+
+_Copilot_ resulta muy útil para obtener rápidamente código simple, evitando tener que escribirlo manualmente, como por ejemplo en el caso de los getters y setters para cada clase. También es útil para familiarizarse con la sintaxis del lenguaje e incluso obtener ideas sobre posibles métodos a utilizar.
+
+En general, utilizo _Copilot_ en situaciones muy específicas, ya que las sugerencias que ofrece a menudo interrumpen mi proceso de pensamiento al resolver un problema.
+
+Por otro lado, cuando se trata de generar código más complejo, encuentro que no quedo conforme con las propuestas de _Copilot_. En estos casos, prefiero utilizar IAs con las que pueda interactuar y hacer preguntas para no solo obtener código funcional, sino también comprenderlo.[1]
+
+Por ejemplo, el programa de `wordcount` que utilizo para ejemplificar la estructura de un programa en Spark fue generado por _ChatGPT_, al mismo tiempo que lo utilizaba para hacer preguntas y comprender el código. [2]
+
+_Bard_ también es muy útil para la generación y comprensión de código en ciertos casos, ya que ofrece respuestas más concisas y divide el código en partes pequeñas, explicando y haciendo referencia a cada una. Sin embargo, una gran desventaja de _Bard_ es que no guarda las conversaciones anteriores, por lo que se pierden las interacciones cada vez que se recarga la página. [3]
+
+## Debugging
+
+En general, las IAs son útiles para solucionar problemas en el código a partir de mensajes de error o excepciones, ya que ofrecen ideas sobre las posibles causas de estos problemas. Aunque no siempre son suficientes, suelen ser una buena herramienta para orientarse en la dirección correcta.
+
+## Generación de entradas para el diccionario
+
+Para la clasificación de las entidades nombradas, utilizamos un diccionario que asigna una clasificación y un tema a cada entidad, siguiendo las jerarquías propuestas en el enunciado. Cuantas más entradas tenga el diccionario, mejor será su capacidad de clasificación.
+
+Para ampliar el diccionario, he utilizado tanto _Bard_ como _ChatGPT_, proporcionándoles el diccionario actual como ejemplo de su estructura, los posibles valores para cada categoría y tema, y algunas indicaciones generales. En este caso, he notado que _ChatGPT_ produce mejores resultados y es más conveniente debido a que no se pierden las conversaciones. En general, ambas IA generan buenas entradas cuando se les solicitan temas específicos, pero llega un punto en el que se estancan y producen contenido que no cumple con las indicaciones proporcionadas.
+
+También les proporcioné la lista de entidades nombradas obtenida mediante nuestro programa, solicitándoles que filtraran aún más las entidades nombradas y las clasificaran. De esta manera, obtuvimos resultados más representativos de las entidades que podríamos encontrar en los feeds configurados.
+
+Además, intenté utilizar las IAs para filtrar entradas inválidas en los diccionarios, pero no resultaron muy útiles, ya que terminaban eliminando entradas válidas o generando nuevas entradas incorrectas.
+
+# Imágenes referenciadas
+
+![](./img/chatgpt-javaspark-structure.png)"[1]. Uso para comprensión de código referido a la estructura de un programa en java spark"
+
+![](./img/chatgpt-wordcount.png)"[2]. Uso para comprensión de código del programa `Wordcount`"
+
+![](./img/bard-sort.png)"[3]. Ejemplo de generación de código usando bard"
