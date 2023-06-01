@@ -249,7 +249,7 @@ He incorporado el uso de inteligencias artificiales en casi todo mi proceso de d
 
 ## Generación y comprensión de código
 
-Para este caso usé las tres IAs, aunque con leves diferencias en los casos de uso para cad una.
+Para este caso usé las tres IAs, aunque con leves diferencias en los casos de uso para cada una.
 
 _Copilot_ resulta muy útil para obtener rápidamente código simple, evitando tener que escribirlo manualmente, como por ejemplo en el caso de los getters y setters para cada clase. También es útil para familiarizarse con la sintaxis del lenguaje e incluso obtener ideas sobre posibles métodos a utilizar.
 
@@ -277,8 +277,11 @@ Además, intenté utilizar las IAs para filtrar entradas inválidas en los dicci
 
 # Imágenes referenciadas
 
-![](./img/chatgpt-javaspark-structure.png)"[1]. Uso para comprensión de código referido a la estructura de un programa en java spark"
+[1] Uso para comprensión de código referido a la estructura de un programa en java spark
+![](./img/chatgpt-javaspark-structure.png)
 
-![](./img/chatgpt-wordcount.png)"[2]. Uso para comprensión de código del programa `Wordcount`"
+[2]. Uso para comprensión de código del programa `Wordcount`
+![](./img/chatgpt-wordcount.png)
 
-![](./img/bard-sort.png)"[3]. Ejemplo de generación de código usando bard"
+[3]. Ejemplo de generación de código usando bard
+![](./img/bard-sort.png)
