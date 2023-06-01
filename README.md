@@ -76,7 +76,7 @@ Podemos identificar las siguientes partes:
 
 1. **Creación de un `SparkContext`** para inicializar el framework de Spark y establecer la comunicación con el cluster.
 
-   En este caso, se crea un `JavaSparkContext` con el argumento `"loca[*]"` que indica que se utilizarán todos los procesadores disponibles en la máquina local. El segundo argumento define un nombre para el programa, que se mostrará en la salida estándar de Spark.
+   En este caso, se crea un `JavaSparkContext` con el argumento `"local[*]"` que indica que se utilizarán todos los procesadores disponibles en la máquina local. El segundo argumento define un nombre para el programa, que se mostrará en la salida estándar de Spark.
 
    ```java
    // Create a SparkContext
