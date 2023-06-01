@@ -254,6 +254,6 @@ Una forma de integrar los dos paradigmas es utilizando una biblioteca que propor
 
 Este modelo divide los datos en fragmentos más pequeños y los procesa en paralelo en varios nodos de un clúster. MapReduce se combina con los conceptos de la programación orientada a objetos y funcional en Spark, ya que las operaciones de map y reduce son fundamentales en el procesamiento de los RDD (Resilient Distributed Datasets).
 
-En un programa en Spark, la **programación orientada a objetos** se utiliza para definir las **estructuras de datos y los objetos** y los objetos, mientras que la **programación funcional** se utiliza para **describir las transformaciones y las operaciones** que se aplican a los datos distribuidos.
+En un programa en Spark, la **programación orientada a objetos** se utiliza para definir las **estructuras de datos y los objetos**, mientras que la **programación funcional** se utiliza para **describir las transformaciones y las operaciones** que se aplican a los datos distribuidos.
 
 Al combinar los dos paradigmas, se pueden aprovechar las ventajas de ambos. Mediante la programación funcional expresar algoritmos de manera concisa y procesar datos de manera eficiente, y mediante la programación orientada a objetos reutilizar código y abstraer los detalles de implementación.
