@@ -141,7 +141,7 @@ Podemos identificar las siguientes partes:
            JavaRDD<String> lines = sc.textFile("tests/input/*.txt");
    ```
 
-3. **Definición de transformaciones** sobre los RDDs. Las transformaciones son operaciones que se aplican a los RDDs para realizar cálculos o preparar los datos para el procesamiento.
+3. **Transformaciones** sobre los RDDs. Las transformaciones son operaciones que se aplican a los RDDs para realizar cálculos o preparar los datos para el procesamiento.
 
    En este caso se realizan varias transformaciones, como `flatMap`, `mapToPair` y `reduceByKey`, que en conjunto obtienen para cada palabra una tupla de la forma `(<word>,<word_frequency>)`.
 
@@ -154,7 +154,7 @@ Podemos identificar las siguientes partes:
                    .map(tuple -> new Tuple2<>(tuple._1(), tuple._2()));
    ```
 
-4. **Definición de acciones**. Las acciones son operaciones que disparan la ejecución del programa de Spark y computan los resultados.
+4. **Acciones**. Las acciones son operaciones que disparan la ejecución del programa de Spark y computan los resultados.
 
    En este caso, se utiliza la acción `collect` para recolectar los resultados parciales de los trabajadores y se imprime el resultado final.
 
@@ -188,9 +188,9 @@ A continuación, se muestra el código relacionado con la carga de datos y la de
 			JavaRDD<Article> articles = sc.parallelize(allArticles);
 ```
 
-En esta sección, los datos se cargan en un RDD. En este caso, los datos que se distribuyen son artículos. Cada nodo de Spark procesará uno o más artículos. La lista allArticles contiene todos los artículos de todos los feeds. El método parallelize() se utiliza para crear un RDD a partir de la lista de artículos.
+Los datos se cargan en un RDD. En este caso, los datos que se distribuyen son artículos. Cada nodo de Spark procesará uno o más artículos. La lista allArticles contiene todos los artículos de todos los feeds. El método `parallelize()` se utiliza para crear un RDD a partir de la lista de artículos.
 
-## Definición de transformaciones
+## Transformaciones
 
 ```java
 JavaRDD<Tuple2<String, Integer>> words = articles
@@ -204,18 +204,39 @@ JavaRDD<Tuple2<String, Integer>> words = articles
 
 ```
 
-En esta sección, se definen las transformaciones que se aplican a los datos:
+Se definen las transformaciones que se aplican a los datos:
 
 1. Se obtiene el contenido de cada artículo y se divide en strings individuales, separados por uno o más espacios en el texto.
 
-2. Se aplica el método cleanString() a cada string obtenido para eliminar caracteres especiales.
+2. Se aplica el método `cleanString()` a cada string obtenido para eliminar caracteres especiales.
 
-3. Se filtran los strings para obtener solo las palabras, utilizando el método isWord() que filtra los strings alfanuméricos.
+3. Se filtran los strings para obtener solo las palabras, utilizando el método `isWord()` que filtra los strings alfanuméricos.
 
-4. Se aplica el método isEntity() a cada palabra para filtrar las entidades nombradas utilizando la heurística especificada.
+4. Se aplica el método `isEntity()` a cada palabra para filtrar las entidades nombradas utilizando la heurística especificada.
 
-5. Se mapea cada entidad nombrada a una tupla de la forma (word, 1).
+5. Se mapea cada entidad nombrada a una tupla de la forma `(word, 1)`.
 
 6. Se agrupan los elementos que tienen la misma clave y se les aplica una función de reducción para obtener la frecuencia total de cada entidad nombrada.
 
-7. Se transforma cada elemento del JavaPairRDD en una tupla con los mismos valores, obteniendo un JavaRDD<Tuple2<String, Integer>> en el que se especifican los tipos de los elementos de la tupla.
+7. Se transforma cada elemento del JavaPairRDD en una tupla con los mismos valores, obteniendo un `JavaRDD<Tuple2<String, Integer>>` en el que se especifican los tipos de los elementos de la tupla.
+
+## Acciones
+
+```java
+// collect all partial results
+			List<Tuple2<String, Integer>> result = words.collect();
+```
+
+Se utiliza la acción `collect()` para recolectar los resultados parciales de las transformaciones realizadas en cada nodo del RDD. Esta acción desencadena la ejecución de las transformaciones y acciones definidas previamente en el RDD. Spark distribuye los cálculos en el clúster, ejecutando las operaciones correspondientes en cada partición y recopilando los resultados en el programa coordinador (driver).
+
+Se utiliza esta acción para obtener una lista de tuplas, de la cual se extraen los parámetros necesarios y se llama al constructor de las clases mediante el método `generateNamedEntity()` de la clase NamedEntity.
+
+## Cómo se integra una estructura orientada a objetos con la estructura funcional de map-reduce
+
+La integración de una estructura orientada a objetos con la estructura funcional de map-reduce se logra utilizando librerías que permiten combinar ambas metodologías. En este caso, empleamos la librería _Spark_ en el lenguaje orientado a objetos _Java_.
+
+**La programación orientada a objetos se utiliza para modelar el problema, abstraer conceptos y representar las entidades nombradas**. Esta metodología nos permite diseñar clases y objetos que encapsulan los datos y el comportamiento relacionado con el problema que queremos resolver.
+
+Por otro lado, **la programación funcional se utiliza para realizar operaciones de transformación y análisis de datos de manera declarativa y sin efectos secundarios**. En lugar de modificar los datos existentes, se aplican funciones puras que toman un conjunto de datos y devuelven un nuevo resultado. El paradigma funcional se basa en la composición de funciones y en la inmutabilidad de los datos. En Spark, esto se traduce en aplicar transformaciones sobre RDDs, donde cada transformación genera un nuevo RDD con las modificaciones especificadas.
+
+Esta combinación nos permite aprovechar lo mejor de ambos enfoques: la claridad y el modelado de la programación orientada a objetos, junto con la capacidad de procesamiento distribuido y paralelismo ofrecidos por la estructura funcional de map-reduce.
