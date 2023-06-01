@@ -86,5 +86,27 @@ sc.stop()
 ## ¿Cómo se integra una estructura orientada a objetos con la estructura funcional de map-reduce?
 
 - En el caso de Spark, se puede utilizar la función `map` para aplicar una función a cada elemento de un RDD. Transformarlo en otro o ir obteniendo nuevos valores (`flatmap` y `*`).
-- 
+
+- Spark se basa en el modelo de programación MapReduce para procesar grandes volúmenes de datos distribuidos. Este modelo divide los datos y los procesa en paralelo en varios threads.
+
+- En un programa en Spark, la programación orientada a objetos se utiliza para definir las estructuras de datos y los objetos, mientras que la programación funcional se utiliza para describir las transformaciones y las operaciones que se aplican a los datos distribuidos.
+
+- Con programación funcional somos más concisos y eficientes y mediante POO logramos reutilización de código y abstracción.
+
+# Extra
+
+## Uso de Spark
+
+- [Documentación oficial](https://spark.apache.org/docs/latest/rdd-programming-guide.html#parallelized-collections)
+- [GitHub](https://github.com/apache/spark/blob/master/examples/src/main/java/org/apache/spark/examples/JavaSparkPi.java)
+- [Medium](https://medium.datadriveninvestor.com/the-most-wanted-commands-in-pyspark-demo-in-databricks-b3eafb44a2fd)
+  - A priori no tiene mucho que ver, pero pude implementarlo en Java (con Spark) con el [DataBrick de Standford](https://stanfordnlp.github.io/CoreNLP/ner.html) siguiendo ese blog. El mismo detectaba en un tiempo razonable y de manera precisa practicamente todas las Named Entities de los documentos.
+    - La parte de Spark es un poco "vende humo" ya que lo volvía más lento, el DataBrick ya está paralelizado por lo que era un overload inncesesario y mal implementado en Java, pero la idea es la misma y es óptima en Scala ya que tanto Spark como el DataBrick tienen soporte en Scala.
+
+## java+spark: org.apache.spark.SparkException: Job aborted: Task not serializable: java.io.NotSerializableException
+
+- Este error se produce cuando se intenta pasar un objeto no serializable a una función lambda.
+
+> Solucionado por Copilot, pero se entendió con 
+> ![StackOverflow](/docs/qe_0.png)
 
