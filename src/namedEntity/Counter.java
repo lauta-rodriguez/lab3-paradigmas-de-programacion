@@ -10,7 +10,7 @@ import java.util.List;
 import scala.Tuple2;
 
 final class SubCounter {
-  private Dictionary<String, Integer> dict;
+  private Dictionary<String, Dictionary<String, Integer>> dict;
   private Integer total;
 
   public SubCounter() {
@@ -18,21 +18,26 @@ final class SubCounter {
     total = 0;
   }
 
-  public void increment(String key) {
-    if (dict.get(key) == null) {
-      dict.put(key, 1);
-    } else {
-      dict.put(key, dict.get(key) + 1);
-    }
-
-    total++;
+  public void increment(String key, String subKey) {
+    increment(key, subKey, 1);
   }
 
-  public void increment(String key, int value) {
-    if (dict.get(key) == null) {
-      dict.put(key, value);
+  public void increment(String key, String subKey, int value) {
+    var subDict = dict.get(key);
+
+    if (subDict == null) {
+      Dictionary<String, Integer> newDict = new Hashtable<>();
+      newDict.put(subKey, 1);
+
+      dict.put(key, newDict);
     } else {
-      dict.put(key, dict.get(key) + value);
+      var subValue = subDict.get(subKey);
+  
+      if (subValue == null) {
+        subValue = 0;
+      }
+
+      subDict.put(subKey, subValue + value);
     }
 
     total += value;
@@ -42,24 +47,35 @@ final class SubCounter {
     return total;
   }
 
-  public List<Tuple2<String, Integer>> getOrdered() {
-    var list = new ArrayList<Tuple2<String, Integer>>();
-
+  public Dictionary<String, List<Tuple2<String, Integer>>> getOrdered() {
+    Dictionary<String, List<Tuple2<String, Integer>>> orderedDict = new Hashtable<>();
+    
     Enumeration<String> k = dict.keys();
     while (k.hasMoreElements()) {
       String key = k.nextElement();
-      list.add(new Tuple2<String, Integer>(key, dict.get(key)));
-      System.out.println("\t\t\t\t" + key + ": " + dict.get(key));
+      var subDict = dict.get(key);
+      
+      var list = new ArrayList<Tuple2<String, Integer>>();
+      Enumeration<String> k2 = subDict.keys();
+      while (k2.hasMoreElements()) {
+        String key2 = k2.nextElement();
+        var value = subDict.get(key2);
+
+        list.add(new Tuple2<String, Integer>(key2, value));
+      }
+
+      list.sort((a, b) -> b._2.compareTo(a._2));
+      orderedDict.put(key, list);
     }
 
-    return list;
+    return orderedDict;
   }
 }
 
 public class Counter implements Serializable {
   private static Dictionary<String, SubCounter> dict = new Hashtable<>();
 
-  public static void increment(String key, String subKey) {
+  public static void increment(String key, String subKey, String subSubKey) {
     SubCounter subCounter = dict.get(key);
 
     if (dict.get(key) == null) {
@@ -67,10 +83,10 @@ public class Counter implements Serializable {
       dict.put(key, subCounter);
     }
 
-    subCounter.increment(subKey);
+    subCounter.increment(subKey, subSubKey);
   }
 
-  public static void increment(String key, String subKey, int value) {
+  public static void increment(String key, String subKey, String subSubKey, int value) {
     SubCounter subCounter = dict.get(key);
 
     if (dict.get(key) == null) {
@@ -78,7 +94,7 @@ public class Counter implements Serializable {
       dict.put(key, subCounter);
     }
 
-    subCounter.increment(subKey, value);
+    subCounter.increment(subKey, subSubKey, value);
   }
 
   public static int getTotal(String key) {
@@ -89,11 +105,29 @@ public class Counter implements Serializable {
     return r.getTotal();
   }
 
-  public static List<Tuple2<String, Integer>> getOrdered(String key) {
-    SubCounter r = dict.get(key);
+  public static Dictionary<String, List<Tuple2<String, Integer>>> getOrdered() {
+    Dictionary<String, List<Tuple2<String, Integer>>> orderedDict = null;
+    
+    Enumeration<String> k = dict.keys();
+    while (k.hasMoreElements()) {
+      String key = k.nextElement();
+      var subDict = dict.get(key).getOrdered();
+      
+      if (orderedDict == null) {
+        orderedDict = subDict;
+        continue;
+      }
 
-    if (r == null)
-      return new ArrayList<>();
-    return r.getOrdered();
+      Enumeration<String> k2 = subDict.keys();
+      while (k2.hasMoreElements()) {
+        String key2 = k2.nextElement();
+        var list = subDict.get(key2);
+
+        orderedDict.put(key2, list);
+      }
+
+    }
+
+    return orderedDict;
   }
 }

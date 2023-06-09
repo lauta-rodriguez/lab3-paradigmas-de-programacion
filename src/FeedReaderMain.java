@@ -117,7 +117,7 @@ public class FeedReaderMain {
 			String key = ne.getCategory() + " - " + ne.getTopic().getCategory();
 			NamedEntity reduced = singleEntities.get(ne.getName());
 
-			Counter.increment(key, ne.getOrigin(), ne.getNEFrequency());
+			Counter.increment(key, ne.getName(), ne.getOrigin(), ne.getNEFrequency());
 
 			if (reduced == null) {
 				singleEntities.put(ne.getName(), ne);
@@ -153,6 +153,8 @@ public class FeedReaderMain {
 
 		System.out.println("Named Entity: " + NamedEntity.getFrequency());
 
+		var ArticleOrdered = Counter.getOrdered();
+
 		Enumeration<String> k = compoundEntities.keys();
 		while (k.hasMoreElements()) {
 			String key = k.nextElement();
@@ -172,10 +174,18 @@ public class FeedReaderMain {
 				List<NamedEntity> list = nestedDict.get(key2);
 
 				System.out.println("\t\t" + key2 + ": " + Counter.getTotal(key + " - " + key2));
-				Counter.getOrdered(key + " - " + key2);
 
 				list.forEach((NamedEntity ne) -> {
 					System.out.println("\t\t\t" + ne.getName() + ": " + ne.getNEFrequency());
+					
+					var origins = ArticleOrdered.get(ne.getName());
+
+					if (origins != null) {
+						origins.forEach((var origin) -> {
+							System.out.println("\t\t\t\t" + origin._1 + ": " + origin._2);
+						});
+					}
+					
 				});
 			}
 		}
