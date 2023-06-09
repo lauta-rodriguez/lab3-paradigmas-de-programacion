@@ -151,6 +151,7 @@ public class Article implements Serializable {
 
 					Topic t = this.generateTopic(h.getTopic(s));
 					ne.setTopic(t);
+					ne.setOrigin(this.getLink());
 
 					this.namedEntityList.add(ne);
 

@@ -13,6 +13,7 @@ public class NamedEntity implements Serializable {
 
 	private static int frequency = 0;
 	private int neFrequency = 0;
+	private String origin = "";
 
 	Topic topic;
 
@@ -45,6 +46,14 @@ public class NamedEntity implements Serializable {
 
 	public int getNEFrequency() {
 		return neFrequency;
+	}
+
+	public void setOrigin(String origin) {
+		this.origin = origin;
+	}
+
+	public String getOrigin() {
+		return this.origin;
 	}
 
 	public void incrementFrequency() {

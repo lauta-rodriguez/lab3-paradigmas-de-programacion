@@ -90,7 +90,7 @@ public class FeedReaderMain {
 					String data = requester.getFeed(feed.getSiteName(), parser.getParserType());
 					List<Article> articleList = parser.parse(data);
 					feed.setArticleList(articleList);
-					feed.prettyPrint();
+					// feed.prettyPrint();
 
 					return articleList.iterator();
 				})
@@ -117,9 +117,10 @@ public class FeedReaderMain {
 			String key = ne.getCategory() + " - " + ne.getTopic().getCategory();
 			NamedEntity reduced = singleEntities.get(ne.getName());
 
+			Counter.increment(key, ne.getOrigin(), ne.getNEFrequency());
+
 			if (reduced == null) {
 				singleEntities.put(ne.getName(), ne);
-				Counter.increment(key, ne.getNEFrequency());
 				Dictionary<String, List<NamedEntity>> sEntities = compoundEntities.get(ne.getCategory());
 				
 				if (sEntities == null) {
@@ -142,7 +143,6 @@ public class FeedReaderMain {
 				continue;
 			}
 
-			Counter.increment(key, ne.getNEFrequency());
 			// CROTO - VILLERO - HORRIBLE
 			for (int i = 0; i < ne.getNEFrequency(); i++) {
 				reduced.incrementNEFrequency();
@@ -171,7 +171,8 @@ public class FeedReaderMain {
 				String key2 = k2.nextElement();
 				List<NamedEntity> list = nestedDict.get(key2);
 
-				System.out.println("\t\t" + key2 + ": " + Counter.get(key + " - " + key2));
+				System.out.println("\t\t" + key2 + ": " + Counter.getTotal(key + " - " + key2));
+				Counter.getOrdered(key + " - " + key2);
 
 				list.forEach((NamedEntity ne) -> {
 					System.out.println("\t\t\t" + ne.getName() + ": " + ne.getNEFrequency());
