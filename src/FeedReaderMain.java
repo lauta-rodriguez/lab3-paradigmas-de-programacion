@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +61,27 @@ public class FeedReaderMain {
     private static HashMap<String, Integer> categoriesAndFrequencies = new HashMap<String, Integer>();
     // hashmap de topics y sus frecuencias
     private static HashMap<String, Integer> topicsAndFrequencies = new HashMap<String, Integer>();
+
+    // diccionario que mapea cada named entity a una lista de la fecuencia con
+    // la que aparece en cada articulo
+    private static final Map<String, List<Tuple2<Integer, String>>> INDEX = new HashMap<>();
+
+    // método que agrega elementos al diccionario:
+    // esto lo único que hace es un put de la key, que es la named entity, y la
+    // lista
+    private static void addToIndex(String namedEntity, Tuple2<Integer, String> tuple) {
+        // agregar la tupla a la lista correspondiente a la key
+        if (INDEX.containsKey(namedEntity)) {
+            INDEX.get(namedEntity).add(tuple);
+        } else {
+            List<Tuple2<Integer, String>> newList = new ArrayList<>();
+            newList.add(tuple);
+            INDEX.put(namedEntity, newList);
+        }
+    }
+
+    // para buscar una named entity, solo tenemos que hacer dictionary.key(<named
+    // entity>)
 
     // agrega todas las categorias al hashmap y en el segundo miembro, se llama a la
     // funcion getFrequency() de cada clase
@@ -282,26 +304,48 @@ public class FeedReaderMain {
                     .flatMap(namedEntityList -> namedEntityList.iterator());
 
             // # mapToPair
-            // se mapea cada ne a una tupla <ne, 1>
-            JavaPairRDD<String, Integer> namedEntityPairRDD = flatNamedEntityRDD
-                    .mapToPair(namedEntity -> new Tuple2<>(namedEntity.getName(), 1));
+            // se mapea cada ne a una tupla <articleLink, <ne, 1>>
+            JavaPairRDD<String, Tuple2<NamedEntity, Integer>> articleLinkNamedEntityRDD = flatNamedEntityRDD
+                    .mapToPair(namedEntity -> new Tuple2<String, Tuple2<NamedEntity, Integer>>(
+                            namedEntity.getArticleLink(),
+                            new Tuple2<NamedEntity, Integer>(namedEntity, 1)));
 
             // # reduceByKey
-            // se realiza el conteo de las frecuencias globales de las ne
-            JavaPairRDD<String, Integer> namedEntityFrequencyRDD = namedEntityPairRDD
-                    .reduceByKey((count1, count2) -> count1 + count2);
+            // se reduce por clave, es decir, por articleLink, y se obtiene un RDD con
+            // <articleLink, <ne, frequency>>
+            JavaPairRDD<String, Tuple2<NamedEntity, Integer>> articleLinkNamedEntityFrequencyRDD = articleLinkNamedEntityRDD
+                    .reduceByKey(
+                            (tuple1, tuple2) -> new Tuple2<NamedEntity, Integer>(tuple1._1, tuple1._2 + tuple2._2));
 
-            // --- end: paralelizacion ---
+            // iterar sobre el RDD y agregar cada named entity al diccionario
+            // se itera sobre cada tupla <articleLink, <ne, frequency>>
+            // se obtiene la named entity y se la agrega al diccionario
+            articleLinkNamedEntityFrequencyRDD.foreach(tuple -> {
+                NamedEntity namedEntity = tuple._2._1;
+                String namedEntityName = namedEntity.getName();
+                Tuple2<Integer, String> tuple2 = new Tuple2<Integer, String>(tuple._2._2, namedEntity.getArticleLink());
+                addToIndex(namedEntityName, tuple2);
+            });
 
-            // # collect
-            // recolecto los resultados del RDD y los paso a una Lista de tuplas
-            List<Tuple2<String, Integer>> namedEntityFrequencyList = namedEntityFrequencyRDD.collect();
+            // ordenar las listas de tuplas <frequency, articleLink> por frecuencia de mayor
+            // a menor
+            // se itera sobre cada lista de tuplas <frequency, articleLink> y se la ordena
+            for (Map.Entry<String, List<Tuple2<Integer, String>>> entry : INDEX.entrySet()) {
+                List<Tuple2<Integer, String>> list = entry.getValue();
+                list.sort(new Comparator<Tuple2<Integer, String>>() {
+                    @Override
+                    public int compare(Tuple2<Integer, String> tuple1, Tuple2<Integer, String> tuple2) {
+                        return tuple2._1.compareTo(tuple1._1);
+                    }
+                });
+            }
 
-            // se imprime las ne y sus frecuencias
-            System.out.println("Named entities and their frequencies: ");
-            for (Tuple2<String, Integer> entry : namedEntityFrequencyList) {
-                System.out.println(entry._1() + " - " + entry._2());
-                // extraer la frecuencia de la categoria y el topic de la ne
+            // imprime el diccionario de named entities, para cada valor de la key, se
+            // imprime la lista de tuplas
+            // <frequency, articleLink>
+            System.out.println("\nNamed Entities and their frequencies: ");
+            for (Map.Entry<String, List<Tuple2<Integer, String>>> entry : INDEX.entrySet()) {
+                System.out.println(entry.getKey() + " - " + entry.getValue());
             }
 
             // se cierra el contexto
