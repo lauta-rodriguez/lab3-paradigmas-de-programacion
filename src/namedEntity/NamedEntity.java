@@ -5,10 +5,11 @@ import java.io.Serializable;
 
 /*Esta clase modela la nocion de entidad nombrada*/
 
-public class NamedEntity implements Serializable{
+public class NamedEntity implements Serializable {
 	String name;
 	private String category = "Other";
 	private String parentCategory = "Named Entity";
+	private String articleLink = "";
 
 	private static int frequency = 0;
 
@@ -38,6 +39,14 @@ public class NamedEntity implements Serializable{
 
 	public static int getFrequency() {
 		return frequency;
+	}
+
+	public String getArticleLink() {
+		return this.articleLink;
+	}
+
+	public void setArticleLink(String articleLink) {
+		this.articleLink = articleLink;
 	}
 
 	public void incrementFrequency() {
