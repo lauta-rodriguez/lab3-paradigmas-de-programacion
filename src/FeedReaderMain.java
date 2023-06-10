@@ -178,9 +178,13 @@ public class FeedReaderMain {
 
     public static void main(String[] args) {
 
-        args = new String[] { "-ne" };
+        args = new String[] { "Sam" };
 
-        if (args.length > 1 || (args.length == 1 && !args[0].equals("-ne"))) {
+        // los argumentos que se le pueden pasar al programa son:
+        // 0 argumentos: generar feed
+        // 1 argumento: generar indice invertido y buscar argumento en el indice
+        if (args.length > 1) {
+            System.out.println("Error: too many arguments");
             printHelp();
             return;
         }
@@ -343,16 +347,31 @@ public class FeedReaderMain {
             // imprime el diccionario de named entities, para cada valor de la key, se
             // imprime la lista de tuplas
             // <frequency, articleLink>
-            System.out.println("\nNamed Entities and their frequencies: ");
-            for (Map.Entry<String, List<Tuple2<Integer, String>>> entry : INDEX.entrySet()) {
-                System.out.println(entry.getKey() + " - " + entry.getValue());
+            // System.out.println("\nNamed Entities and their frequencies: ");
+            // for (Map.Entry<String, List<Tuple2<Integer, String>>> entry :
+            // INDEX.entrySet()) {
+            // System.out.println(entry.getKey() + " - " + entry.getValue());
+            // }
+
+            // buscamos la palabra pasado por parametro en el diccionario, si existe,
+            // se imprime la lista de tuplas <frequency, articleLink> asociada a la key
+            // si no existe, se imprime un mensaje de error
+            String keyword = args[0];
+            if (INDEX.containsKey(keyword)) {
+                System.out.println("\nArticles containing \"" + keyword + "\"");
+                List<Tuple2<Integer, String>> list = INDEX.get(keyword);
+                for (Tuple2<Integer, String> tuple : list) {
+                    System.out.println(tuple._2 + " - " + tuple._1);
+                }
+            } else {
+                System.out.println("\nError: keyword \"" + keyword + "\" not found");
             }
 
             // se cierra el contexto
             jsc.close();
 
             // se imprime las Categorias y Topics y sus Frecuencias
-            printCTFrequencies();
+            // printCTFrequencies();
         }
 
     }
