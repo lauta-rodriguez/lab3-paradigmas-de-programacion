@@ -1,6 +1,7 @@
 package topic;
+import java.io.Serializable;
 
-public class Topic {
+public class Topic implements Serializable {
   private String name = "-";
   private String category = "Other";
   private String parentCategory = "Topic";
