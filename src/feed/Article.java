@@ -206,6 +206,8 @@ public class Article implements Serializable {
 
 					this.namedEntityList.add(ne);
 
+					ne.setArticleLink(this.getLink());
+
 				} else { // si esta, incrementa su contador de ocurrencias
 					ne.incrementFrequency();
 					ne.getTopic().incrementFrequency();
