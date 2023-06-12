@@ -12,14 +12,14 @@ Los trabajos individuales se encuentran en las branches con los nombres de cada 
 
 A continuación se presentan las ventajas y desventajas de cada implementación individual:
 
-### Lara Kurtz: (preguntarle a Lara)
+### Lara Kurtz:
 
 Ventajas: Es menos verboso al utilizar notación de punto en la estructura map-reduce.
 Está muy bien documentado, lo cual facilita la lectura y posterior modificación del código.
 
 Desventajas: primero evalúa si una palabra es una entidad nombrada y trabaja sobre esa lista. Una vez identificadas las entidades nombradas, las computa. Aunque nos parece una buena idea, para la segunda parte de este laboratorio nos sirve computar las entidades nombradas a medida que las vamos parseando, esto para más adelante enlazarlas con los artículos en los que aparecen.
 
-### Gonzalo Bordón: (debatir sobre esto con Lara)
+### Gonzalo Bordón:
 
 Ventajas: paraleliza la obtención de feeds y logra el mejor tiempo de ejecución.
 
