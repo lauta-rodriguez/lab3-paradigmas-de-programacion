@@ -235,8 +235,8 @@ public class FeedReaderMain {
             // se itera sobre cada uno de los parametros de la url
             // por cada parametro se obtiene el feed, es decir, la lista de articulos
             // la lista de articulos se agrega a la lista global
-            for (int j = 0; j < single.getUlrParamsSize(); j++) {
-                String urlParam = single.getUlrParams(j);
+            for (int j = 0; j < single.getUrlParamsSize(); j++) {
+                String urlParam = single.getUrlParams(j);
                 String urlParamFeed = String.format(url, urlParam);
                 String data = requester.getFeed(urlParamFeed, urlType);
 

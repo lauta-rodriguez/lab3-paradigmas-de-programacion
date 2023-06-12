@@ -6,13 +6,13 @@ import java.util.List;
 public class SingleSubscription {
 
 	private String url;
-	private List<String> ulrParams;
+	private List<String> UrlParams;
 	private String urlType;
 
-	public SingleSubscription(String url, List<String> ulrParams, String urlType) {
+	public SingleSubscription(String url, List<String> UrlParams, String urlType) {
 		super();
 		this.url = url;
-		this.ulrParams = ulrParams;
+		this.UrlParams = UrlParams;
 		this.urlType = urlType;
 	}
 
@@ -24,20 +24,20 @@ public class SingleSubscription {
 		this.url = url;
 	}
 
-	public List<String> getUlrParams() {
-		return ulrParams;
+	public List<String> getUrlParams() {
+		return UrlParams;
 	}
 
-	public String getUlrParams(int i) {
-		return this.ulrParams.get(i);
+	public String getUrlParams(int i) {
+		return this.UrlParams.get(i);
 	}
 
-	public void setUlrParams(String urlParam) {
-		this.ulrParams.add(urlParam);
+	public void setUrlParams(String urlParam) {
+		this.UrlParams.add(urlParam);
 	}
 
-	public int getUlrParamsSize() {
-		return ulrParams.size();
+	public int getUrlParamsSize() {
+		return UrlParams.size();
 	}
 
 	public String getUrlType() {
@@ -50,7 +50,7 @@ public class SingleSubscription {
 
 	@Override
 	public String toString() {
-		return "{url=" + getUrl() + ", ulrParams=" + getUlrParams().toString() + ", urlType=" + getUrlType() + "}";
+		return "{url=" + getUrl() + ", UrlParams=" + getUrlParams().toString() + ", urlType=" + getUrlType() + "}";
 	}
 
 	public void prettyPrint() {
@@ -58,15 +58,15 @@ public class SingleSubscription {
 	}
 
 	public String getFeedToRequest(int i) {
-		return this.getUrl().replace("%s", this.getUlrParams(i));
+		return this.getUrl().replace("%s", this.getUrlParams(i));
 	}
 
 	public static void main(String[] args) {
 		System.out.println("SingleSubscriptionClass");
 		SingleSubscription s = new SingleSubscription("https://rss.nytimes.com/services/xml/rss/nyt/%s.xml", null,
 				"rss");
-		s.setUlrParams("Business");
-		s.setUlrParams("Technology");
+		s.setUrlParams("Business");
+		s.setUrlParams("Technology");
 		System.out.println(s.getFeedToRequest(0));
 		s.prettyPrint();
 	}
