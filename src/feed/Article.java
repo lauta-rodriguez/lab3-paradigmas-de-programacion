@@ -193,6 +193,9 @@ public class Article implements Serializable {
 
 		for (String s : text.split(" ")) {
 			if (h.isEntity(s)) {
+
+				s = s.toLowerCase();
+
 				// ver si la entidad nombrada ya se encuentra en las entidades
 				// de este articulo
 				NamedEntity ne = this.getNamedEntity(s);

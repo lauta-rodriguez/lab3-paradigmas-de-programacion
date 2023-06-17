@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Arrays;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,7 +27,7 @@ public abstract class Heuristic {
 				for (int i = 0; i < arr.length(); i++) {
 					values[i] = arr.getString(i);
 				}
-				categoryMap.put(key, values);
+				categoryMap.put(key.toLowerCase(), values);
 			}
 		} catch (IOException | JSONException e) {
 			e.printStackTrace();
@@ -60,7 +61,6 @@ public abstract class Heuristic {
 
 		/* carga data en categoryMap desde un JSON */
 		if (categoryMap.isEmpty())
-			loadCategoryMapFromJSON("config/dictionary.json");
+			loadCategoryMapFromJSON("../config/dictionary.json");
 	}
-
 }
