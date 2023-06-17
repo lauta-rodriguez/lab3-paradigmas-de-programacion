@@ -3,6 +3,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 
 import org.apache.spark.SparkConf;
@@ -181,8 +182,8 @@ public class FeedReaderMain {
         // los argumentos que se le pueden pasar al programa son:
         // 0 argumentos: generar feed
         // 1 argumento: generar indice invertido y buscar argumento en el indice
-        if (args.length > 1) {
-            System.out.println("Error: too many arguments");
+        if (args.length > 1 || ((args.length == 1) && !args[0].equals("-s"))) {
+            System.out.println("Error: bad arguments");
             printHelp();
             return;
         }
@@ -276,7 +277,7 @@ public class FeedReaderMain {
             System.out.println("Feed from: " + siteNamesString);
             // se imprime el feed
             feed.prettyPrint();
-        } else {
+        } else { // program was called with the -s flag
 
             // empieza el codigo para computar las entidades nombradas
             Heuristic heuristic = new QuickHeuristic();
@@ -351,19 +352,32 @@ public class FeedReaderMain {
             // System.out.println(entry.getKey() + " - " + entry.getValue());
             // }
 
+            // Create a Scanner object to read input
+            Scanner scanner = new Scanner(System.in);
+
             // buscamos la palabra pasado por parametro en el diccionario, si existe,
             // se imprime la lista de tuplas <frequency, articleLink> asociada a la key
             // si no existe, se imprime un mensaje de error
-            String keyword = args[0].toLowerCase();
-            if (INDEX.containsKey(keyword)) {
-                System.out.println("\nArticles containing \"" + keyword + "\"");
-                List<Tuple2<Integer, String>> list = INDEX.get(keyword);
-                for (Tuple2<Integer, String> tuple : list) {
-                    System.out.println(tuple._2 + " - " + tuple._1);
+            while (true) {
+                System.out.print("\nSearch for: ");
+                String keyword = scanner.nextLine().toLowerCase();
+
+                if (keyword.equals("exit")) {
+                    break;
                 }
-            } else {
-                System.out.println("\nError: keyword \"" + keyword + "\" not found");
+
+                if (INDEX.containsKey(keyword)) {
+                    System.out.println("\nArticles containing \"" + keyword + "\"");
+                    List<Tuple2<Integer, String>> list = INDEX.get(keyword);
+                    for (Tuple2<Integer, String> tuple : list) {
+                        System.out.println(tuple._2 + " - " + tuple._1);
+                    }
+                } else {
+                    System.out.println("\nError: keyword \"" + keyword + "\" not found");
+                }
             }
+
+            scanner.close();
 
             // se cierra el contexto
             jsc.close();
