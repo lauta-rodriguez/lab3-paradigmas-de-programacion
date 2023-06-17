@@ -6,6 +6,71 @@ Los trabajos individuales se encuentran en las branches con los nombres de cada 
 - Kurtz Lara: branch `kurtz-lara`
 - Rodríguez Lautaro: branch `rodriguez-lautaro`
 
+# Cómo correr el projecto
+
+## Requisitos:
+
+- Java 11
+  ```
+  sudo apt install openjdk-11-jdk
+  ```
+- Apache Spark 3.4.0
+
+## ¿Cómo instalar Spark?
+
+En los siguientes pasos se detalla cómo instalar Spark 3.4.0 e integrarlo con Java 11:
+
+1. Descargar Spark 3.4.0
+   shell
+   wget https://dlcdn.apache.org/spark/spark-3.4.0/spark-3.4.0-bin-hadoop3.tgz
+2. Descomprimir Spark 3.4.0
+   shell
+   tar -xvzf spark-3.4.0-bin-hadoop3.tgz
+3. Entrar al directorio y mover el directorio `jars` a la carpeta `lib` de nuestro proyecto
+   shell
+   cd spark-3.4.0-bin-hadoop3
+   mv jars {PATH_A_NUESTRO_PROYECTO}/lib
+4. Debemos agregar un archivo `settings.json` en la carpeta de nuestro proyecto que indique la ubicación de las liberí­as referenciadas en nuestro proyecto, en particular, Spark:
+   json
+   {
+   "java.project.referencedLibraries": ["lib/*.jar"]
+   }
+
+## Comando para correr el projecto
+
+- Compilación:
+
+  ```shell
+  javac -cp lib/jars/*:src -d bin -proc:none src/FeedReaderMain.java
+  ```
+
+- Ejecución:
+
+  Si se desea imprimir los artículos, entonces se debe correr el proyecto sin ninguna opción.
+
+  Si se corre con la opción `-s` entonces se puede consultar al índice invertido por documentos que contengan una cierta entidad nombrada:
+
+  ```shell
+  cd bin && java -cp .:../lib/jars/* FeedReaderMain -s
+  ```
+
+  Se obtendrá la siguiente sesión interactiva, de la cual se podrá salir escribiendo `exit`:
+
+  ```
+    Search for: meta
+
+      Articles containing "meta"
+      https://www.nytimes.com/2023/06/16/technology/meta-virtual-reality-headset-children-safety.html - 12
+
+    Search for: exit
+  ```
+
+- Limpiar el directorio de binarios:
+
+  ```shell
+  cd .. && rm -r bin/
+  ```
+
 # Laboratorio 3: Entrega grupal
 
 ## Parte 1: Puesta en común de implementaciones individuales
