@@ -178,8 +178,6 @@ public class FeedReaderMain {
 
     public static void main(String[] args) {
 
-        args = new String[] { "Sam" };
-
         // los argumentos que se le pueden pasar al programa son:
         // 0 argumentos: generar feed
         // 1 argumento: generar indice invertido y buscar argumento en el indice
@@ -195,7 +193,7 @@ public class FeedReaderMain {
         // codigo comun a las ejecuciones con y sin parametros
 
         // obtengo la lista de suscripciones
-        Subscription subscription = new SubscriptionParser().parse("config/subscriptions.json");
+        Subscription subscription = new SubscriptionParser().parse("../config/subscriptions.json");
 
         // se obtienen las single subscriptions para poder extraer informacion sobre
         // cada una de ellas
@@ -356,7 +354,7 @@ public class FeedReaderMain {
             // buscamos la palabra pasado por parametro en el diccionario, si existe,
             // se imprime la lista de tuplas <frequency, articleLink> asociada a la key
             // si no existe, se imprime un mensaje de error
-            String keyword = args[0];
+            String keyword = args[0].toLowerCase();
             if (INDEX.containsKey(keyword)) {
                 System.out.println("\nArticles containing \"" + keyword + "\"");
                 List<Tuple2<Integer, String>> list = INDEX.get(keyword);
