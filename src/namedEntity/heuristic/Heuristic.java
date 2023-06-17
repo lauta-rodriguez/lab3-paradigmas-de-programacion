@@ -61,6 +61,6 @@ public abstract class Heuristic {
 
 		/* carga data en categoryMap desde un JSON */
 		if (categoryMap.isEmpty())
-			loadCategoryMapFromJSON("./config/dictionary.json");
+			loadCategoryMapFromJSON("../config/dictionary.json");
 	}
 }
