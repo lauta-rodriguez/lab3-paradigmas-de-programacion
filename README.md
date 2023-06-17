@@ -21,20 +21,24 @@ Los trabajos individuales se encuentran en las branches con los nombres de cada 
 En los siguientes pasos se detalla cómo instalar Spark 3.4.0 e integrarlo con Java 11:
 
 1. Descargar Spark 3.4.0
-   shell
+   ```shell
    wget https://dlcdn.apache.org/spark/spark-3.4.0/spark-3.4.0-bin-hadoop3.tgz
+   ```
 2. Descomprimir Spark 3.4.0
-   shell
+   ```shell
    tar -xvzf spark-3.4.0-bin-hadoop3.tgz
+   ```
 3. Entrar al directorio y mover el directorio `jars` a la carpeta `lib` de nuestro proyecto
-   shell
+   ```shell
    cd spark-3.4.0-bin-hadoop3
    mv jars {PATH_A_NUESTRO_PROYECTO}/lib
+   ```
 4. Debemos agregar un archivo `settings.json` en la carpeta de nuestro proyecto que indique la ubicación de las liberí­as referenciadas en nuestro proyecto, en particular, Spark:
-   json
+   ```json
    {
-   "java.project.referencedLibraries": ["lib/*.jar"]
+     "java.project.referencedLibraries": ["lib/*.jar"]
    }
+   ```
 
 ## Comando para correr el projecto
 
