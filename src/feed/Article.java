@@ -21,6 +21,7 @@ import namedEntity.classes.Place.Country;
 import namedEntity.classes.Product.Product;
 import namedEntity.classes.CDate.CDate;
 import namedEntity.heuristic.Heuristic;
+import parser.RedditParser;
 import topic.Topic;
 import topic.Culture.Cine;
 import topic.Culture.Culture;
@@ -38,6 +39,8 @@ import java.io.Serializable;
 /*Esta clase modela el contenido de un articulo (ie, un item en el caso del rss feed) */
 
 public class Article implements Serializable {
+
+	private static final int MAX_CHARS = 80;
 	private String title;
 	private String text;
 	private Date publicationDate;
@@ -220,17 +223,61 @@ public class Article implements Serializable {
 	}
 
 	public void prettyPrint() {
-		System.out
-				.println(
-						"**********************************************************************************************");
+		// limita la descripcion a RedditParser.MAX_CHARS caracteres
+		// considerando palabras completas
+		String[] sentences = this.getText().split("\\.");
+		String description = sentences[0];
+
+		if (description.length() > Article.MAX_CHARS) {
+			int lastSpaceIndex = description.lastIndexOf(' ', Article.MAX_CHARS);
+
+			if (lastSpaceIndex == -1) {
+				lastSpaceIndex = Article.MAX_CHARS;
+			}
+
+			description = description.substring(0, lastSpaceIndex);
+		}
+
+		if (sentences.length > 1) {
+			String secondSentence = sentences[1];
+
+			if (secondSentence.length() > Article.MAX_CHARS) {
+				int lastSpaceIndex = secondSentence.lastIndexOf(' ', Article.MAX_CHARS);
+
+				if (lastSpaceIndex == -1) {
+					lastSpaceIndex = Article.MAX_CHARS;
+				}
+
+				secondSentence = secondSentence.substring(0, lastSpaceIndex);
+			}
+
+			description += ". " + secondSentence;
+		}
+
+		// Insert newlines every 94 characters in the description
+		StringBuilder formattedDescription = new StringBuilder();
+		int charCount = 0;
+		for (int i = 0; i < description.length(); i++) {
+			char currentChar = description.charAt(i);
+			formattedDescription.append(currentChar);
+			charCount++;
+
+			if (charCount == 94) {
+				formattedDescription.append("\n");
+				charCount = 0;
+			}
+		}
+
+		description = formattedDescription.toString() + "...";
+
+		System.out.println(
+				"**********************************************************************************************");
 		System.out.println("Title: " + this.getTitle());
 		System.out.println("Publication Date: " + this.getPublicationDate());
 		System.out.println("Link: " + this.getLink());
-		System.out.println("Text: " + this.getText());
-		System.out
-				.println(
-						"**********************************************************************************************");
-
+		System.out.println("Text: " + description);
+		System.out.println(
+				"**********************************************************************************************");
 	}
 
 	public static void main(String[] args) {

@@ -13,8 +13,6 @@ import org.json.JSONException;
  * */
 public class RedditParser extends GeneralParser<List<Article>> {
 
-    private static final int MAX_CHARS = 80;
-
     /*
      * Este metodo genera articulos dado un post
      * Extrae los atributos: titulo, descripcion, fecha y link
@@ -23,42 +21,9 @@ public class RedditParser extends GeneralParser<List<Article>> {
         String title = postJson.getString("title");
         String text = postJson.getString("selftext");
 
-        // limita la descripcion a RedditParser.MAX_CHARS caracteres
-        // considerando palabras completas
-        String[] sentences = text.split("\\.");
-        String description = sentences[0];
-
-        if (description.length() > RedditParser.MAX_CHARS) {
-            int lastSpaceIndex = description.lastIndexOf(' ', RedditParser.MAX_CHARS);
-
-            if (lastSpaceIndex == -1) {
-                lastSpaceIndex = RedditParser.MAX_CHARS;
-            }
-
-            description = description.substring(0, lastSpaceIndex);
-        }
-
-        if (sentences.length > 1) {
-            String secondSentence = sentences[1];
-
-            if (secondSentence.length() > RedditParser.MAX_CHARS) {
-                int lastSpaceIndex = secondSentence.lastIndexOf(' ', RedditParser.MAX_CHARS);
-
-                if (lastSpaceIndex == -1) {
-                    lastSpaceIndex = RedditParser.MAX_CHARS;
-                }
-
-                secondSentence = secondSentence.substring(0, lastSpaceIndex);
-            }
-
-            description += ". " + secondSentence;
-        }
-
-        description += "...";
-
         String link = "https://www.reddit.com" + postJson.getString("permalink");
         Date date = new Date(postJson.getLong("created_utc") * 1000);
-        Article article = new Article(title, description, date, link);
+        Article article = new Article(title, text, date, link);
         return article;
     }
 
