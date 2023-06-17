@@ -48,8 +48,7 @@ En los siguientes pasos se detalla cómo instalar Spark 3.4.0 e integrarlo con J
   javac -cp lib/jars/*:src -d bin -proc:none src/FeedReaderMain.java
   ```
 
-- Ejecución:
-
+- Ejecución:  
   Si se desea imprimir los artículos, entonces se debe correr el proyecto sin ninguna opción.
 
   Si se corre con la opción `-s` entonces se puede consultar al índice invertido por documentos que contengan una cierta entidad nombrada:
@@ -70,7 +69,6 @@ En los siguientes pasos se detalla cómo instalar Spark 3.4.0 e integrarlo con J
   ```
 
 - Limpiar el directorio de binarios:
-
   ```shell
   cd .. && rm -r bin/
   ```
