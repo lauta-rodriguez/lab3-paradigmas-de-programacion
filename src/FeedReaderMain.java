@@ -193,7 +193,7 @@ public class FeedReaderMain {
         // codigo comun a las ejecuciones con y sin parametros
 
         // obtengo la lista de suscripciones
-        Subscription subscription = new SubscriptionParser().parse("../config/subscriptions.json");
+        Subscription subscription = new SubscriptionParser().parse("./config/subscriptions.json");
 
         // se obtienen las single subscriptions para poder extraer informacion sobre
         // cada una de ellas
