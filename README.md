@@ -108,17 +108,17 @@ Nos quedamos con la implementación de Lautaro, principalmente porque se adecua 
 
 ### Objetivo
 
-Implementamos una funcionalidad que permite recuperar artículos por palabra clave. Para lograr esto, utilizamos un índice invertido. Un índice invertido es una forma de estructurar la información que va a ser recuperada en la búsqueda. En este caso, el índice invertido es un diccionario que tiene como clave las **entidades nombradas** que identificamos y clasificamos en la primera parte del laboratorio, y como valor una lista de los documentos en los que aparece esa entidad nombrada, ordenados de mayor a menor frecuencia.
+Implementamos una funcionalidad que permite recuperar artículos por palabra clave. Para lograr esto, utilizamos un índice invertido. Un índice invertido es una forma de estructurar la información que va a ser recuperada en la búsqueda. En este caso, el índice invertido es un diccionario que tiene como clave **palabras**, y como valor una lista de los documentos en los que aparece esa **palabra**, ordenados de mayor a menor frecuencia.
 
 ### ¿Cómo se adaptó la implementación elegida para recuperar documentos por palabra clave?
 
-1. Modificamos la clase **NamedEntity** para que tenga un atributo `articleLink`, que es el enlace al artículo del cual se extrajo la entidad nombrada. Esta información nos sirve para poder contar la frecuencia de aparición de la entidad nombrada en cierto artículo.
+1. Creamos una clase **Word** con un atributo `word` y otro `articleLink`, que es el enlace al artículo del cual se extrajo la palabra.
 
-2. Implementamos los métodos setter y getter para el atributo `articleLink`.
+2. Implementamos los métodos setter y getter la nueva clase.
 
-3. Modificamos la clase **Article**, ya que en ella se computan las entidades nombradas que aparecen en el artículo. Ahora, también asociamos a cada entidad nombrada el enlace al artículo del cual fue extraída mediante el setter de la clase **NamedEntity**.
+3. Modificamos la clase **Article**, ya que en ella se computan las **single words** aparecen en el artículo. Ahora, también asociamos a cada palabra el enlace al artículo del cual fue extraída mediante el setter de la clase **Word**.
 
-4. Actualizamos la estructura map-reduce para obtener un RDD de tuplas (articleLink, (namedEntity, frequency)).
+4. Actualizamos la estructura map-reduce para obtener un RDD de tuplas (articleLink, (word, frequency)).
 
 5. A partir del RDD obtenido en el paso anterior, creamos un diccionario `Index` que contiene la información necesaria para recuperar los artículos por palabra clave.
 
