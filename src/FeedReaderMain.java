@@ -68,7 +68,6 @@ public class FeedReaderMain {
 
     public static void main(String[] args) {
 
-        args = new String[] { "-s" };
         // los argumentos que se le pueden pasar al programa son:
         // 0 argumentos: generar feed
         // 1 argumento: generar indice invertido y buscar argumento en el indice
