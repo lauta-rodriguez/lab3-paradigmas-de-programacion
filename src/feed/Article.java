@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
+import word.Word;
+
 import namedEntity.NamedEntity;
 import namedEntity.classes.Organization.Organization;
 import namedEntity.classes.Event.Event;
@@ -46,7 +48,7 @@ public class Article implements Serializable {
 	private Date publicationDate;
 	private String link;
 
-	private List<NamedEntity> namedEntityList = new ArrayList<NamedEntity>();
+	private List<Word> wordList = new ArrayList<Word>();
 
 	public Article(String title, String text, Date publicationDate, String link) {
 		super();
@@ -54,38 +56,6 @@ public class Article implements Serializable {
 		this.text = text;
 		this.publicationDate = publicationDate;
 		this.link = link;
-	}
-
-	private static final Map<String, Class<? extends NamedEntity>> CATEGORY_CLASS_MAP = new HashMap<>();
-
-	static {
-		CATEGORY_CLASS_MAP.put("Lastname", Lastname.class);
-		CATEGORY_CLASS_MAP.put("Name", Name.class);
-		CATEGORY_CLASS_MAP.put("Title", Title.class);
-		CATEGORY_CLASS_MAP.put("Place", Place.class);
-		CATEGORY_CLASS_MAP.put("City", City.class);
-		CATEGORY_CLASS_MAP.put("Country", Country.class);
-		CATEGORY_CLASS_MAP.put("Address", Address.class);
-		CATEGORY_CLASS_MAP.put("Organization", Organization.class);
-		CATEGORY_CLASS_MAP.put("Product", Product.class);
-		CATEGORY_CLASS_MAP.put("Event", Event.class);
-		CATEGORY_CLASS_MAP.put("CDate", CDate.class);
-	}
-
-	private static final Map<String, Class<? extends Topic>> TOPIC_CLASS_MAP = new HashMap<>();
-
-	static {
-		TOPIC_CLASS_MAP.put("Culture", Culture.class);
-		TOPIC_CLASS_MAP.put("Cine", Cine.class);
-		TOPIC_CLASS_MAP.put("Music", Music.class);
-		TOPIC_CLASS_MAP.put("Politics", Politics.class);
-		TOPIC_CLASS_MAP.put("International", International.class);
-		TOPIC_CLASS_MAP.put("National", National.class);
-		TOPIC_CLASS_MAP.put("Sports", Sports.class);
-		TOPIC_CLASS_MAP.put("Futbol", Futbol.class);
-		TOPIC_CLASS_MAP.put("Basket", Basket.class);
-		TOPIC_CLASS_MAP.put("Tennis", Tennis.class);
-		TOPIC_CLASS_MAP.put("F1", F1.class);
 	}
 
 	public String getTitle() {
@@ -108,8 +78,8 @@ public class Article implements Serializable {
 		return publicationDate;
 	}
 
-	public List<NamedEntity> getNamedEntityList() {
-		return namedEntityList;
+	public List<Word> getWordList() {
+		return wordList;
 	}
 
 	public void setPublicationDate(Date publicationDate) {
@@ -130,43 +100,20 @@ public class Article implements Serializable {
 				+ "]";
 	}
 
-	public NamedEntity getNamedEntity(String namedEntity) {
-		for (NamedEntity n : namedEntityList) {
-			if (n.getName().compareTo(namedEntity) == 0) {
-				return n;
+	public Word getWord(String word) {
+		for (Word w : wordList) {
+			if (w.getWord().compareTo(word) == 0) {
+				return w;
 			}
 		}
 		return null;
 	}
 
-	private NamedEntity generateNamedEntity(String namedEntity, String category)
-			throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-			NoSuchMethodException, SecurityException, ClassNotFoundException {
-
-		Class<? extends NamedEntity> action = CATEGORY_CLASS_MAP.getOrDefault(category, NamedEntity.class);
-		NamedEntity ne = action.getDeclaredConstructor(String.class)
-				.newInstance(namedEntity);
-
-		return ne;
-	}
-
-	private Topic generateTopic(String topic)
-			throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-			NoSuchMethodException, SecurityException, ClassNotFoundException {
-
-		Class<? extends Topic> action = TOPIC_CLASS_MAP.getOrDefault(topic, Topic.class);
-		Topic t = action.getDeclaredConstructor(String.class).newInstance(topic);
-
-		return t;
-	}
-
-	public void computeNamedEntities(Heuristic h)
-			throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-			NoSuchMethodException, ClassNotFoundException {
+	public void computeSingleWords() {
 		String text = this.getTitle() + " " + this.getText();
 
 		// Reemplaza los siguientes caracteres .,;:()'\"!?&*‘'“\n por "" (empty string)
-		text = text.replaceAll("[.,;:()'\"!?&*‘'“\n]", "");
+		text = text.replaceAll("[.,;:()\"!?&*‘“\n]", "");
 
 		// Divide el texto en palabras
 		String[] words = text.split("\\s+");
@@ -176,50 +123,23 @@ public class Article implements Serializable {
 				.filter(word -> !word.isEmpty())
 				.toArray(String[]::new);
 
-		// Filtra palabras con menos de 3 caracteres
-		words = Arrays.stream(words)
-				.filter(word -> word.length() > 2)
-				.toArray(String[]::new);
-
 		// Filtra palabras que no son alfanumericas
 		words = Arrays.stream(words)
 				.filter(word -> word.matches("[a-zA-Z0-9]+"))
 				.toArray(String[]::new);
 
-		// Filtra numeros
-		words = Arrays.stream(words)
-				.filter(word -> !word.matches("[0-9]+"))
-				.toArray(String[]::new);
-
 		// Reconstruye el texto
 		text = String.join(" ", words);
 
+		// Agrega las palabras una por una a la lista de palabras
+		// WordList es una lista con todas las palabras del articulo (una misma palabra
+		// puede aparecer varias veces)
 		for (String s : text.split(" ")) {
-			if (h.isEntity(s)) {
-
-				s = s.toLowerCase();
-
-				// ver si la entidad nombrada ya se encuentra en las entidades
-				// de este articulo
-				NamedEntity ne = this.getNamedEntity(s);
-
-				// si no esta, se genera la entidad nombrada y el topic correspondiente
-				if (ne == null) {
-					ne = this.generateNamedEntity(s, h.getCategory(s));
-
-					Topic t = this.generateTopic(h.getTopic(s));
-					ne.setTopic(t);
-
-					this.namedEntityList.add(ne);
-
-					ne.setArticleLink(this.getLink());
-
-				} else { // si esta, incrementa su contador de ocurrencias
-					ne.incrementFrequency();
-					ne.getTopic().incrementFrequency();
-				}
-			}
+			// vamos a trabajar con palabras en minuscula
+			s = s.toLowerCase();
+			this.wordList.add(new Word(s, this.getLink()));
 		}
+
 	}
 
 	public void prettyPrint() {
@@ -275,18 +195,25 @@ public class Article implements Serializable {
 		System.out.println("Title: " + this.getTitle());
 		System.out.println("Publication Date: " + this.getPublicationDate());
 		System.out.println("Link: " + this.getLink());
-		System.out.println("Text: " + description);
+		System.out.println("Text: " + this.getText());
+		System.out.println("Word List: ");
+		for (Word w : this.wordList) {
+			System.out.println(w.getWord() + " " + w.getArticleLink());
+		}
+		System.out.println("\n");
 		System.out.println(
 				"**********************************************************************************************");
 	}
 
 	public static void main(String[] args) {
 		Article a = new Article("This Historically Black University Created Its Own Tech Intern Pipeline",
-				"A new program at Bowie State connects computing students directly with companies, bypassing an often harsh Silicon Valley vetting process",
+				"A new program at Bowie Bowie State connects computing students directly with companies, bypassing an often harsh Silicon Valley vetting process",
 				new Date(),
 				"https://www.nytimes.com/2023/04/05/technology/bowie-hbcu-tech-intern-pipeline.html");
 
+		a.computeSingleWords();
 		a.prettyPrint();
+
 	}
 
 }

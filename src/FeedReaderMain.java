@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
@@ -14,21 +13,6 @@ import org.apache.spark.api.java.JavaSparkContext;
 import feed.Article;
 import feed.Feed;
 import httpRequest.httpRequester;
-import namedEntity.NamedEntity;
-import namedEntity.classes.CDate.CDate;
-import namedEntity.classes.Event.Event;
-import namedEntity.classes.Organization.Organization;
-import namedEntity.classes.Person.Lastname;
-import namedEntity.classes.Person.Name;
-import namedEntity.classes.Person.Person;
-import namedEntity.classes.Person.Title;
-import namedEntity.classes.Place.Address;
-import namedEntity.classes.Place.City;
-import namedEntity.classes.Place.Country;
-import namedEntity.classes.Place.Place;
-import namedEntity.classes.Product.Product;
-import namedEntity.heuristic.Heuristic;
-import namedEntity.heuristic.QuickHeuristic;
 import parser.GeneralParser;
 import parser.RedditParser;
 import parser.RssParser;
@@ -36,18 +20,7 @@ import parser.SubscriptionParser;
 import scala.Tuple2;
 import subscription.SingleSubscription;
 import subscription.Subscription;
-import topic.Topic;
-import topic.Culture.Cine;
-import topic.Culture.Culture;
-import topic.Culture.Music;
-import topic.Politics.International;
-import topic.Politics.National;
-import topic.Politics.Politics;
-import topic.Sports.Basket;
-import topic.Sports.F1;
-import topic.Sports.Futbol;
-import topic.Sports.Sports;
-import topic.Sports.Tennis;
+import word.Word;
 
 public class FeedReaderMain {
 
@@ -58,105 +31,21 @@ public class FeedReaderMain {
     // se le pasa como parametro al generador de feeds
     private static List<String> siteNames = new ArrayList<String>();
 
-    // hashmap de categorias y sus frecuencias
-    private static HashMap<String, Integer> categoriesAndFrequencies = new HashMap<String, Integer>();
-    // hashmap de topics y sus frecuencias
-    private static HashMap<String, Integer> topicsAndFrequencies = new HashMap<String, Integer>();
-
-    // diccionario que mapea cada named entity a una lista de la fecuencia con
+    // diccionario que mapea cada word a una lista de la frecuencia con
     // la que aparece en cada articulo
     private static final Map<String, List<Tuple2<Integer, String>>> INDEX = new HashMap<>();
 
     // método que agrega elementos al diccionario:
-    // esto lo único que hace es un put de la key, que es la named entity, y la
+    // esto lo único que hace es un put de la key, que es la word, y la
     // lista
-    private static void addToIndex(String namedEntity, Tuple2<Integer, String> tuple) {
+    private static void addToIndex(String word, Tuple2<Integer, String> tuple) {
         // agregar la tupla a la lista correspondiente a la key
-        if (INDEX.containsKey(namedEntity)) {
-            INDEX.get(namedEntity).add(tuple);
+        if (INDEX.containsKey(word)) {
+            INDEX.get(word).add(tuple);
         } else {
             List<Tuple2<Integer, String>> newList = new ArrayList<>();
             newList.add(tuple);
-            INDEX.put(namedEntity, newList);
-        }
-    }
-
-    // para buscar una named entity, solo tenemos que hacer dictionary.key(<named
-    // entity>)
-
-    // agrega todas las categorias al hashmap y en el segundo miembro, se llama a la
-    // funcion getFrequency() de cada clase
-    private static void getCategoriesAndFrequencies() {
-
-        // se agregan las categorias y sus frecuencias al hashmap
-        categoriesAndFrequencies.put("CDate", CDate.getFrequency());
-        categoriesAndFrequencies.put("Event", Event.getFrequency());
-        categoriesAndFrequencies.put("Organization", Organization.getFrequency());
-        categoriesAndFrequencies.put("Lastname", Lastname.getFrequency());
-        categoriesAndFrequencies.put("Name", Name.getFrequency());
-        categoriesAndFrequencies.put("Person", Person.getFrequency());
-        categoriesAndFrequencies.put("Title", Title.getFrequency());
-        categoriesAndFrequencies.put("Address", Address.getFrequency());
-        categoriesAndFrequencies.put("City", City.getFrequency());
-        categoriesAndFrequencies.put("Country", Country.getFrequency());
-        categoriesAndFrequencies.put("Place", Place.getFrequency());
-        categoriesAndFrequencies.put("Product", Product.getFrequency());
-        categoriesAndFrequencies.put("Other [Category]", NamedEntity.getFrequency());
-    }
-
-    // agrega todos los topics al hashmap y en el segundo miembro, se llama a la
-    // funcion getFrequency() de cada clase
-    private static void getTopicsAndFrequencies() {
-        // se agregan los topics y sus frecuencias al hashmap
-        topicsAndFrequencies.put("Cine", Cine.getFrequency());
-        topicsAndFrequencies.put("Culture", Culture.getFrequency());
-        topicsAndFrequencies.put("Music", Music.getFrequency());
-
-        topicsAndFrequencies.put("International", International.getFrequency());
-        topicsAndFrequencies.put("National", National.getFrequency());
-        topicsAndFrequencies.put("Politics", Politics.getFrequency());
-
-        topicsAndFrequencies.put("Basket", Basket.getFrequency());
-        topicsAndFrequencies.put("F1", F1.getFrequency());
-        topicsAndFrequencies.put("Futbol", Futbol.getFrequency());
-        topicsAndFrequencies.put("Sports", Sports.getFrequency());
-        topicsAndFrequencies.put("Tennis", Tennis.getFrequency());
-
-        topicsAndFrequencies.put("Other [Topic]", Topic.getFrequency());
-    }
-
-    // imprime las categorias y topics y sus frecuencias
-    private static void printCTFrequencies() {
-        // Obtener las categorias y frecuencias
-        getCategoriesAndFrequencies();
-        // Obtener los topics y frecuencias
-        getTopicsAndFrequencies();
-
-        // Ordenar las categorias y frecuencias por frecuencia, en orden descendente
-        Map<String, Integer> sortedCategoriesbyFrequency = categoriesAndFrequencies.entrySet().stream()
-                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1,
-                        java.util.LinkedHashMap::new));
-
-        // Ordenar los topics y frecuencias por frecuencia, en orden descendente
-        Map<String, Integer> sortedTopicsbyFrequency = topicsAndFrequencies.entrySet().stream()
-                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1,
-                        java.util.LinkedHashMap::new));
-
-        // Impresion de las categorias y topics y sus frecuencias (!= 0)
-        System.out.println("\nCategories and their frequencies: ");
-        for (Map.Entry<String, Integer> entry : sortedCategoriesbyFrequency.entrySet()) {
-            if (entry.getValue() != 0) {
-                System.out.println(entry.getKey() + " - " + entry.getValue());
-            }
-        }
-
-        System.out.println("\nTopics and their frequencies: ");
-        for (Map.Entry<String, Integer> entry : sortedTopicsbyFrequency.entrySet()) {
-            if (entry.getValue() != 0) {
-                System.out.println(entry.getKey() + " - " + entry.getValue());
-            }
+            INDEX.put(word, newList);
         }
     }
 
@@ -179,6 +68,8 @@ public class FeedReaderMain {
 
     public static void main(String[] args) {
 
+        args = new String[] { "-s" };
+
         // los argumentos que se le pueden pasar al programa son:
         // 0 argumentos: generar feed
         // 1 argumento: generar indice invertido y buscar argumento en el indice
@@ -194,7 +85,7 @@ public class FeedReaderMain {
         // codigo comun a las ejecuciones con y sin parametros
 
         // obtengo la lista de suscripciones
-        Subscription subscription = new SubscriptionParser().parse("../config/subscriptions.json");
+        Subscription subscription = new SubscriptionParser().parse("./config/subscriptions.json");
 
         // se obtienen las single subscriptions para poder extraer informacion sobre
         // cada una de ellas
@@ -279,9 +170,6 @@ public class FeedReaderMain {
             feed.prettyPrint();
         } else { // program was called with the -s flag
 
-            // empieza el codigo para computar las entidades nombradas
-            Heuristic heuristic = new QuickHeuristic();
-
             // se crea el contexto de spark
             SparkConf conf = new SparkConf().setAppName("NER").setMaster("local[*]");
             JavaSparkContext jsc = new JavaSparkContext(conf);
@@ -295,50 +183,81 @@ public class FeedReaderMain {
             // # map
             // a cada articulo de articleRDD se le computa las ne y por cada articulo vamos
             // a tener una List<NamedEntity>, resultando en un
-            JavaRDD<List<NamedEntity>> namedEntityRDD = articleRDD.map(article -> {
-                article.computeNamedEntities(heuristic);
-                return article.getNamedEntityList();
+            JavaRDD<List<Word>> namedEntityRDD = articleRDD.map(article -> {
+                article.computeSingleWords();
+                return article.getWordList();
             });
+
+            // HASTA ACA ESTA BIEN
+            // TENGO 3 DE ESTOS: golf -
+            // https://www.nytimes.com/2023/06/15/insider/15liv-pga-deal.html
 
             // # flatMap
             // obtengo un RDD con todas las named entities individuales, por lo que van a
             // haber ne repetidas
-            JavaRDD<NamedEntity> flatNamedEntityRDD = namedEntityRDD
+            JavaRDD<Word> flatNamedEntityRDD = namedEntityRDD
                     .flatMap(namedEntityList -> namedEntityList.iterator());
 
             // # mapToPair
             // se mapea cada ne a una tupla <articleLink, <ne, 1>>
-            JavaPairRDD<String, Tuple2<NamedEntity, Integer>> articleLinkNamedEntityRDD = flatNamedEntityRDD
-                    .mapToPair(namedEntity -> new Tuple2<String, Tuple2<NamedEntity, Integer>>(
+            JavaPairRDD<String, Tuple2<Word, Integer>> articleLinkNamedEntityRDD = flatNamedEntityRDD
+                    .mapToPair(namedEntity -> new Tuple2<String, Tuple2<Word, Integer>>(
                             namedEntity.getArticleLink(),
-                            new Tuple2<NamedEntity, Integer>(namedEntity, 1)));
+                            new Tuple2<Word, Integer>(namedEntity, 1)));
 
-            // # reduceByKey
-            // se reduce por clave, es decir, por articleLink, y se obtiene un RDD con
-            // <articleLink, <ne, frequency>>
-            JavaPairRDD<String, Tuple2<NamedEntity, Integer>> articleLinkNamedEntityFrequencyRDD = articleLinkNamedEntityRDD
-                    .reduceByKey(
-                            (tuple1, tuple2) -> new Tuple2<NamedEntity, Integer>(tuple1._1, tuple1._2 + tuple2._2));
+            // HASTA ACA ESTA BIEN
+            // TENGO 3 DE ESTOS:
+            // https://www.nytimes.com/2023/06/15/insider/15liv-pga-deal.html - golf - 1
 
-            // iterar sobre el RDD y agregar cada named entity al diccionario
-            // se itera sobre cada tupla <articleLink, <ne, frequency>>
-            // se obtiene la named entity y se la agrega al diccionario
-            articleLinkNamedEntityFrequencyRDD.foreach(tuple -> {
-                NamedEntity namedEntity = tuple._2._1;
-                String namedEntityName = namedEntity.getName();
-                Tuple2<Integer, String> tuple2 = new Tuple2<Integer, String>(tuple._2._2, namedEntity.getArticleLink());
-                addToIndex(namedEntityName, tuple2);
-            });
+            // agrupo por clave, es decir, por articleLink, y se obtiene un RDD con
+            // <articleLink, <ne, 1>>
+            JavaPairRDD<String, Iterable<Tuple2<Word, Integer>>> articleLinkNamedEntityGroupedRDD = articleLinkNamedEntityRDD
+                    .groupByKey();
 
-            // ordenar las listas de tuplas <frequency, articleLink> por frecuencia de mayor
-            // a menor
-            // se itera sobre cada lista de tuplas <frequency, articleLink> y se la ordena
+            // Map each group to a tuple containing the "articleLink" and a map of
+            // word counts
+            JavaPairRDD<String, Map<String, Integer>> wordCountRDD = articleLinkNamedEntityGroupedRDD
+                    .mapValues(namedEntityList -> {
+                        Map<String, Integer> wordCountMap = new HashMap<>();
+                        namedEntityList.forEach(namedEntity -> {
+                            String word = namedEntity._1.getWord();
+                            if (wordCountMap.containsKey(word)) {
+                                wordCountMap.put(word, wordCountMap.get(word) + 1);
+                            } else {
+                                wordCountMap.put(word, 1);
+                            }
+                        });
+                        return wordCountMap;
+                    });
+
+            // Collect the results into a list or perform further operations as needed
+            List<Tuple2<String, Map<String, Integer>>> wordCountList = wordCountRDD.collect();
+
+            // filter the duplicates
+            List<Tuple2<String, Map<String, Integer>>> filteredWordCountList = new ArrayList<>();
+
+            filteredWordCountList = wordCountList.stream().filter(tuple -> {
+                return tuple._2.size() > 1;
+            }).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+
+            // agrego los elementos al indice invertido
+            for (Tuple2<String, Map<String, Integer>> tuple : filteredWordCountList) {
+                String articleLink = tuple._1;
+                Map<String, Integer> wordCountMap = tuple._2;
+
+                for (Map.Entry<String, Integer> entry : wordCountMap.entrySet()) {
+                    String word = entry.getKey();
+                    Integer frequency = entry.getValue();
+                    addToIndex(word, new Tuple2<Integer, String>(frequency, articleLink));
+                }
+            }
+
+            // ordeno el indice invertido por frecuencia de mayor a menor
             for (Map.Entry<String, List<Tuple2<Integer, String>>> entry : INDEX.entrySet()) {
-                List<Tuple2<Integer, String>> list = entry.getValue();
-                list.sort(new Comparator<Tuple2<Integer, String>>() {
+                entry.getValue().sort(new Comparator<Tuple2<Integer, String>>() {
                     @Override
-                    public int compare(Tuple2<Integer, String> tuple1, Tuple2<Integer, String> tuple2) {
-                        return tuple2._1.compareTo(tuple1._1);
+                    public int compare(Tuple2<Integer, String> o1, Tuple2<Integer, String> o2) {
+                        return o2._1.compareTo(o1._1);
                     }
                 });
             }
@@ -346,11 +265,10 @@ public class FeedReaderMain {
             // imprime el diccionario de named entities, para cada valor de la key, se
             // imprime la lista de tuplas
             // <frequency, articleLink>
-            // System.out.println("\nNamed Entities and their frequencies: ");
-            // for (Map.Entry<String, List<Tuple2<Integer, String>>> entry :
-            // INDEX.entrySet()) {
-            // System.out.println(entry.getKey() + " - " + entry.getValue());
-            // }
+            System.out.println("\nNamed Entities and their frequencies: ");
+            for (Map.Entry<String, List<Tuple2<Integer, String>>> entry : INDEX.entrySet()) {
+                System.out.println(entry.getKey() + " -> " + entry.getValue());
+            }
 
             // Create a Scanner object to read input
             Scanner scanner = new Scanner(System.in);
