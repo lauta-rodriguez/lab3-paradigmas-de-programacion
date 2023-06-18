@@ -50,7 +50,7 @@ public class FeedReaderMain {
     }
 
     private static void printHelp() {
-        System.out.println("Please, call this program in correct way: FeedReader [-ne]");
+        System.out.println("Please, call this program in correct way: FeedReader [-s | -word]");
     }
 
     private static String extractSiteName(String url) {
@@ -69,7 +69,6 @@ public class FeedReaderMain {
     public static void main(String[] args) {
 
         args = new String[] { "-s" };
-
         // los argumentos que se le pueden pasar al programa son:
         // 0 argumentos: generar feed
         // 1 argumento: generar indice invertido y buscar argumento en el indice
@@ -148,7 +147,7 @@ public class FeedReaderMain {
             return;
         }
 
-        // dependiendo de si se pasa el parametro -ne o no, se genera el feed o se
+        // dependiendo de si se pasa el parametro -word o no, se genera el feed o se
         // computan las entidades nombradas
         if (args.length == 0) {
 
@@ -181,46 +180,41 @@ public class FeedReaderMain {
             // --- begin: paralelizacion hasta reduce || collect ---
 
             // # map
-            // a cada articulo de articleRDD se le computa las ne y por cada articulo vamos
-            // a tener una List<NamedEntity>, resultando en un
-            JavaRDD<List<Word>> namedEntityRDD = articleRDD.map(article -> {
+            // a cada articulo de articleRDD se le computa las word y por cada articulo
+            // vamos
+            // a tener una List<Word>, resultando en un
+            JavaRDD<List<Word>> wordRDD = articleRDD.map(article -> {
                 article.computeSingleWords();
                 return article.getWordList();
             });
 
-            // HASTA ACA ESTA BIEN
-            // TENGO 3 DE ESTOS: golf -
-            // https://www.nytimes.com/2023/06/15/insider/15liv-pga-deal.html
-
             // # flatMap
-            // obtengo un RDD con todas las named entities individuales, por lo que van a
-            // haber ne repetidas
-            JavaRDD<Word> flatNamedEntityRDD = namedEntityRDD
-                    .flatMap(namedEntityList -> namedEntityList.iterator());
+            // obtengo un RDD con todas las words individuales, por lo que van a
+            // haber word repetidas
+            JavaRDD<Word> flatWordRDD = wordRDD
+                    .flatMap(wordList -> wordList.iterator());
 
             // # mapToPair
-            // se mapea cada ne a una tupla <articleLink, <ne, 1>>
-            JavaPairRDD<String, Tuple2<Word, Integer>> articleLinkNamedEntityRDD = flatNamedEntityRDD
-                    .mapToPair(namedEntity -> new Tuple2<String, Tuple2<Word, Integer>>(
-                            namedEntity.getArticleLink(),
-                            new Tuple2<Word, Integer>(namedEntity, 1)));
+            // se mapea cada word a una tupla <articleLink, <word, 1>>
+            JavaPairRDD<String, Tuple2<Word, Integer>> articleLinkWordRDD = flatWordRDD
+                    .mapToPair(word -> new Tuple2<String, Tuple2<Word, Integer>>(
+                            word.getArticleLink(),
+                            new Tuple2<Word, Integer>(word, 1)));
 
-            // HASTA ACA ESTA BIEN
-            // TENGO 3 DE ESTOS:
-            // https://www.nytimes.com/2023/06/15/insider/15liv-pga-deal.html - golf - 1
-
+            // # groupByKey
             // agrupo por clave, es decir, por articleLink, y se obtiene un RDD con
-            // <articleLink, <ne, 1>>
-            JavaPairRDD<String, Iterable<Tuple2<Word, Integer>>> articleLinkNamedEntityGroupedRDD = articleLinkNamedEntityRDD
+            // <articleLink, <word, 1>>
+            JavaPairRDD<String, Iterable<Tuple2<Word, Integer>>> articleLinkWordGroupedRDD = articleLinkWordRDD
                     .groupByKey();
 
-            // Map each group to a tuple containing the "articleLink" and a map of
-            // word counts
-            JavaPairRDD<String, Map<String, Integer>> wordCountRDD = articleLinkNamedEntityGroupedRDD
-                    .mapValues(namedEntityList -> {
+            // # mapValues
+            // mapea cada grupo a una tupla que contiene el "articleLink" y un map de word
+            // counts
+            JavaPairRDD<String, Map<String, Integer>> wordCountRDD = articleLinkWordGroupedRDD
+                    .mapValues(wordList -> {
                         Map<String, Integer> wordCountMap = new HashMap<>();
-                        namedEntityList.forEach(namedEntity -> {
-                            String word = namedEntity._1.getWord();
+                        wordList.forEach(w -> {
+                            String word = w._1.getWord();
                             if (wordCountMap.containsKey(word)) {
                                 wordCountMap.put(word, wordCountMap.get(word) + 1);
                             } else {
@@ -230,13 +224,13 @@ public class FeedReaderMain {
                         return wordCountMap;
                     });
 
-            // Collect the results into a list or perform further operations as needed
+            // # collect
             List<Tuple2<String, Map<String, Integer>>> wordCountList = wordCountRDD.collect();
 
-            // filter the duplicates
-            List<Tuple2<String, Map<String, Integer>>> filteredWordCountList = new ArrayList<>();
+            // --- end: paralelizacion hasta reduce || collect ---
 
-            filteredWordCountList = wordCountList.stream().filter(tuple -> {
+            // filtra entries duplicadas
+            List<Tuple2<String, Map<String, Integer>>> filteredWordCountList = wordCountList.stream().filter(tuple -> {
                 return tuple._2.size() > 1;
             }).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
 
@@ -262,15 +256,16 @@ public class FeedReaderMain {
                 });
             }
 
-            // imprime el diccionario de named entities, para cada valor de la key, se
+            // imprime el diccionario de words, para cada valor de la key, se
             // imprime la lista de tuplas
             // <frequency, articleLink>
-            System.out.println("\nNamed Entities and their frequencies: ");
-            for (Map.Entry<String, List<Tuple2<Integer, String>>> entry : INDEX.entrySet()) {
-                System.out.println(entry.getKey() + " -> " + entry.getValue());
-            }
+            // System.out.println("\n Words and their frequencies: ");
+            // for (Map.Entry<String, List<Tuple2<Integer, String>>> entry :
+            // INDEX.entrySet()) {
+            // System.out.println(entry.getKey() + " -> " + entry.getValue());
+            // }
 
-            // Create a Scanner object to read input
+            // crea un scanner para poder buscar palabras en el diccionario
             Scanner scanner = new Scanner(System.in);
 
             // buscamos la palabra pasado por parametro en el diccionario, si existe,
@@ -295,13 +290,11 @@ public class FeedReaderMain {
                 }
             }
 
+            // se cierra el scanner
             scanner.close();
 
             // se cierra el contexto
             jsc.close();
-
-            // se imprime las Categorias y Topics y sus Frecuencias
-            // printCTFrequencies();
         }
 
     }

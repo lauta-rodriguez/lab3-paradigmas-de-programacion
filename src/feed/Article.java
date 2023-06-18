@@ -1,45 +1,14 @@
 package feed;
 
-import java.lang.reflect.InvocationTargetException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
 
 import word.Word;
 
-import namedEntity.NamedEntity;
-import namedEntity.classes.Organization.Organization;
-import namedEntity.classes.Event.Event;
-import namedEntity.classes.Person.Lastname;
-import namedEntity.classes.Person.Name;
-import namedEntity.classes.Person.Title;
-import namedEntity.classes.Place.City;
-import namedEntity.classes.Place.Address;
-import namedEntity.classes.Place.Place;
-import namedEntity.classes.Place.Country;
-import namedEntity.classes.Product.Product;
-import namedEntity.classes.CDate.CDate;
-import namedEntity.heuristic.Heuristic;
-import parser.RedditParser;
-import topic.Topic;
-import topic.Culture.Cine;
-import topic.Culture.Culture;
-import topic.Culture.Music;
-import topic.Politics.International;
-import topic.Politics.National;
-import topic.Politics.Politics;
-import topic.Sports.Basket;
-import topic.Sports.F1;
-import topic.Sports.Futbol;
-import topic.Sports.Sports;
-import topic.Sports.Tennis;
-import java.io.Serializable;
-
-/*Esta clase modela el contenido de un articulo (ie, un item en el caso del rss feed) */
-
+/* Esta clase modela el contenido de un articulo (ie, un item en el caso del rss feed) */
 public class Article implements Serializable {
 
 	private static final int MAX_CHARS = 80;
@@ -174,33 +143,14 @@ public class Article implements Serializable {
 			description += ". " + secondSentence;
 		}
 
-		// Insert newlines every 94 characters in the description
-		StringBuilder formattedDescription = new StringBuilder();
-		int charCount = 0;
-		for (int i = 0; i < description.length(); i++) {
-			char currentChar = description.charAt(i);
-			formattedDescription.append(currentChar);
-			charCount++;
-
-			if (charCount == 94) {
-				formattedDescription.append("\n");
-				charCount = 0;
-			}
-		}
-
-		description = formattedDescription.toString() + "...";
+		description = description + "...";
 
 		System.out.println(
 				"**********************************************************************************************");
 		System.out.println("Title: " + this.getTitle());
 		System.out.println("Publication Date: " + this.getPublicationDate());
 		System.out.println("Link: " + this.getLink());
-		System.out.println("Text: " + this.getText());
-		System.out.println("Word List: ");
-		for (Word w : this.wordList) {
-			System.out.println(w.getWord() + " " + w.getArticleLink());
-		}
-		System.out.println("\n");
+		System.out.println("Text: " + description);
 		System.out.println(
 				"**********************************************************************************************");
 	}
