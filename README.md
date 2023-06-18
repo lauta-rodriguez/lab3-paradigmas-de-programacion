@@ -49,8 +49,7 @@ En los siguientes pasos se detalla cómo instalar Spark 3.4.0 e integrarlo con J
   ```
 
 - Ejecución:  
-  Si se desea imprimir los artículos, entonces se debe correr el proyecto sin ninguna opción.
-
+  Si se desea imprimir los artículos, entonces se debe correr el proyecto sin ninguna opción.  
   Si se corre con la opción `-s` entonces se puede consultar al índice invertido por documentos que contengan una cierta entidad nombrada:
 
   ```shell
@@ -131,3 +130,9 @@ La salida indica que se ha encontrado la palabra clave "Sam" en 1 artículo, y q
 Articles containing "Sam"
 https://www.nytimes.com/2023/06/07/technology/sam-altman-ai-regulations.html - 8
 ```
+
+# Consideraciones
+
+Para los feeds RSS, creamos un índice invertido utilizando las palabras extraídas de la descripción de cada artículo. Esta información se obtiene del archivo `.xml` del feed. Idealmente, habríamos generado el índice utilizando las palabras extraídas del _contenido_ de cada artículo. Sin embargo, debido a que el acceso a este contenido está restringido por una barrera de pago (_pay wall_), no podemos obtenerlo simplemente mediante una solicitud HTTP al enlace del artículo.
+
+Este problema no se presenta con los feeds de Reddit, ya que podemos acceder al contenido de cada publicación directamente desde el archivo `JSON` que obtenemos del feed.
